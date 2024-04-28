@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "commonjs",  // esnextからcommonjsに変更
+    "module": "commonjs",
     "target": "es6",
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "sourceMap": true,
     "allowJs": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./node_modules/@types", "./types"]  // カスタム型定義ディレクトリを追加
   },
   "include": ["src/**/*"]
 }

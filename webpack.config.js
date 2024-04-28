@@ -4,7 +4,7 @@ const webpack = require('webpack');  // Import webpack to use the ProvidePlugin
 
 module.exports = {
     mode: 'development',
-    entry: './src/renderer.tsx',
+    entry: './src/renderer/renderer.tsx',
     module: {
         rules: [
             {
@@ -27,7 +27,7 @@ module.exports = {
         }),
     ],
     output: {
-        filename: 'renderer.js',
+        filename: 'renderer/renderer.js',
         path: path.resolve(__dirname, 'dist'),
     },
 };

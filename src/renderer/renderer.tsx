@@ -1,8 +1,8 @@
 // renderer.tsx
 import ReactDOM from 'react-dom/client';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import MenuScreen from './MenuScreen';
-import MyRoomScreen from './MyRoomScreen';
+import MenuScreen from './components/MenuScreen';
+import MyRoomScreen from './components/MyRoomScreen';
 
 const App = () => {
   return (

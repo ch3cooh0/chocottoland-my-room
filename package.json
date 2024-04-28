@@ -2,10 +2,11 @@
   "name": "chocottoland-my-room",
   "version": "1.0.0",
   "description": "チョコットランドの冒険者のお部屋です。",
-  "main": "dist/main.js",
+  "main": "dist/main/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
+    "start": "NODE_ENV=development electron .",
+    "start:prod": "NODE_ENV=production electron .",
     "build:ts": "tsc",
     "build": "npm run build:ts && webpack --config webpack.config.js"
   },
