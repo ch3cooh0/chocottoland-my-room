@@ -1,15 +1,24 @@
-import ReactDOM from 'react-dom/client'; // React 18以降の新しいインポートパス
+// renderer.tsx
+import ReactDOM from 'react-dom/client';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import MenuScreen from './MenuScreen';
+import MyRoomScreen from './MyRoomScreen';
 
-const App = () => <h1>Hello, Electron and React!</h1>;
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MenuScreen />} />
+        <Route path="/my-room" element={<MyRoomScreen />} />
+      </Routes>
+    </Router>
+  );
+};
 
-// アプリケーションをマウントするコンテナ要素を取得します。
 const container = document.getElementById('app');
-
-// コンテナ要素が見つかった場合は、Reactアプリケーションをマウントします。
 if (container !== null) {
-    const root = ReactDOM.createRoot(container); // React 18の新機能を使用してルートを作成
-    root.render(<App />);
+  const root = ReactDOM.createRoot(container);
+  root.render(<App />);
 } else {
-    // コンテナ要素が見つからない場合は、エラーメッセージを表示します。
-    console.error('ルート要素が見つかりませんでした');
+  console.error('ルート要素が見つかりませんでした');
 }

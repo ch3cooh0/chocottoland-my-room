@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');  // Import webpack to use the ProvidePlugin
 
 module.exports = {
     mode: 'development',
@@ -19,6 +20,10 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html'
+        }),
+        // Add this to make React available automatically without importing it everywhere
+        new webpack.ProvidePlugin({
+            React: 'react', // This tells webpack to use the react module and assign it to the React variable where it's used
         }),
     ],
     output: {
