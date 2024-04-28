@@ -20,12 +20,6 @@ const MyRoomScreen = () => {
       <Link to="/">
         <button>Back to Menu</button>
       </Link>
-      <h1>Equipment List</h1>
-      <ul>
-        {equipments.map((equipment) => (
-          <li key={equipment.id}>{equipment.name}</li>
-        ))}
-      </ul>
     </div>
   );
 };

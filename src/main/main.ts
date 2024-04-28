@@ -1,6 +1,6 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, Menu, MenuItem, ipcMain } from 'electron';
 import path from 'path';
-import {loadEquipmentData} from './equipmentDataLoader';
+import { loadEquipmentData } from './equipmentDataLoader';
 
 function createWindow(): void {
     const mainWindow = new BrowserWindow({
@@ -16,15 +16,32 @@ function createWindow(): void {
 
     mainWindow.loadFile(path.join(__dirname, '..', 'index.html'));
 
+    // メニューバーの設定
+    const menu = Menu.buildFromTemplate([
+        {
+            label: 'File',
+            submenu: [
+                { type: 'separator' },
+                { label: 'Exit', click: () => app.quit() }
+            ]
+        },
+        {
+            label: 'View',
+            submenu: [
+                { label: 'Reload', role: 'reload' },
+                { label: 'Toggle Developer Tools', role: 'toggleDevTools' }
+            ]
+        }
+    ]);
+
+    mainWindow.setMenu(menu);
+
     // 開発ツールを自動的に開く
-    //mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
-    // メインウィンドウの作成
     createWindow();
-
-    // プラットフォームが MacOS の場合は特別な処理が必要です
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
@@ -34,7 +51,7 @@ app.whenReady().then(() => {
 
 ipcMain.on('load-equipment-data', (event) => {
     loadEquipmentData(event)
-  });
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
