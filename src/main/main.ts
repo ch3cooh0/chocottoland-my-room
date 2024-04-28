@@ -1,12 +1,15 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import {loadEquipmentData} from './equipmentDataLoader';
 
 function createWindow(): void {
     const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true,
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
         },
         title: "冒険者のお部屋"
     });
@@ -28,6 +31,10 @@ app.whenReady().then(() => {
         }
     });
 });
+
+ipcMain.on('load-equipment-data', (event) => {
+    loadEquipmentData(event)
+  });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

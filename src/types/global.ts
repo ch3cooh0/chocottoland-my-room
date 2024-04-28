@@ -32,3 +32,12 @@ export interface Equipment {
 export interface EquipmentData {
     [key: string]: Equipment; // 装備IDをキーとして、それに対応する装備オブジェクトを持つ
 }
+
+// グローバルなWindowインターフェースを拡張
+export interface Window {
+    electronAPI: {
+      loadEquipmentData: () => void;
+      onDataLoaded: (callback: (event: any, data: { data: Equipment[], error?: string }) => void) => void;
+      // その他のカスタムAPIメソッドも追加可能...
+    };
+  }

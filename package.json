@@ -5,8 +5,8 @@
   "main": "dist/main/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development electron .",
-    "start:prod": "NODE_ENV=production electron .",
+    "start": "set NODE_ENV=development && electron .",
+    "start:prod": "set NODE_ENV=production && electron .",
     "build:ts": "tsc",
     "build": "npm run build:ts && webpack --config webpack.config.js"
   },
