@@ -3,7 +3,7 @@
     "outDir": "./dist",
     "module": "commonjs",  // esnextからcommonjsに変更
     "target": "es6",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "moduleResolution": "node",
     "sourceMap": true,
     "allowJs": true,
