@@ -12,6 +12,10 @@ module.exports = {
                 use: 'babel-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /\.css$/, // This will apply the loader to all .css files
+                use: ['style-loader', 'css-loader'] // The order is important (css-loader first, then style-loader)
+            },
         ],
     },
     resolve: {

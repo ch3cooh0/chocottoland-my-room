@@ -37,7 +37,7 @@ function createWindow(): void {
     mainWindow.setMenu(menu);
 
     // 開発ツールを自動的に開く
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {

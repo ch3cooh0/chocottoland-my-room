@@ -7,6 +7,7 @@ const MenuScreen = () => {
       <Link to="/my-room">
         <button>お部屋</button>
       </Link>
+      <br></br>
       <button>設定</button>
     </div>
   );
