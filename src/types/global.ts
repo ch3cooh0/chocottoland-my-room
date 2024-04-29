@@ -19,7 +19,7 @@ export interface Status {
     DRN: number; // 吸収
 }
 
-// 装備
+// 装備アイテム
 export interface Equipment {
     id: string;       // 装備ID
     name: string;     // 装備名
@@ -28,9 +28,22 @@ export interface Equipment {
     text: string;     // 装備に関する追加テキスト
 }
 
+// 装備済みの装備　メイン装備であるかを持つ
+export interface Equipped {
+    equipment: Equipment;
+    isMainEquipment: boolean;
+}
+
 // 装備データの型を定義します
-export interface EquipmentData {
-    [key: string]: Equipment; // 装備IDをキーとして、それに対応する装備オブジェクトを持つ
+export interface Equipments {
+    weapon: Equipped | null;
+    shield: Equipped | null;
+    head: Equipped | null;
+    back: Equipped | null;
+    shoes: Equipped | null;
+    hands: Equipped | null;
+    neck: Equipped | null;
+    clothes: Equipped | null;
 }
 
 // グローバルなWindowインターフェースを拡張
