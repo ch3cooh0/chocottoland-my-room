@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import ReactPaginate from 'react-paginate';
+import { useEquipmentSearch } from '../hooks/useEquipmentSearch';
 import { Status, Equipments,Equipped,Equipment } from "../../types/global";
+import EquipmentCard from "./EquipmentCard";
 
 interface Props {
     isOpen: boolean;
@@ -11,29 +13,15 @@ interface Props {
 }
 
 const EquipmentSearchModal: React.FC<Props> = ({ isOpen, onRequestClose,category, equipmentList }) => {
-    const [searchName, setSearchName] = useState<string>('');
-    const [searchCategory, setSearchCategory] = useState<string>(category); 
-    const [sortKey, setSortKey] = useState<keyof Equipment['status'] | ''>('');
-    const [filteredEquipmentList, setFilteredEquipmentList] = useState<Equipment[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-
-    useEffect(() => {
-        const filtered = equipmentList.filter(equipment =>
-            (searchName === '' || equipment.name.includes(searchName)) &&
-            equipment.category === searchCategory
-        );
-        const sorted = sortKey ? filtered.sort((a, b) => (a.status[sortKey] ?? 0) - (b.status[sortKey] ?? 0)) : filtered;
-        setFilteredEquipmentList(sorted);
-    }, [searchName, searchCategory, sortKey, equipmentList]);
-    
-    const handlePageClick = (data: { selected: number }) => {
-        setCurrentPage(data.selected);
-    };
-
-    const offset = currentPage * itemsPerPage;
-    const currentItems = filteredEquipmentList.slice(offset, offset + itemsPerPage);
-    const pageCount = Math.ceil(filteredEquipmentList.length / itemsPerPage);
+    const {
+        searchName,
+        setSearchName,
+        searchCategory,
+        setSortKey,
+        currentItems,
+        pageCount,
+        handlePageClick
+    } = useEquipmentSearch({ equipmentList, initialCategory: category });
 
     return (
         <Modal isOpen={isOpen} onRequestClose={onRequestClose} contentLabel="Equipment Search">
@@ -51,7 +39,7 @@ const EquipmentSearchModal: React.FC<Props> = ({ isOpen, onRequestClose,category
             <div>
                 <label>
                     ソート条件:
-                    <select value={sortKey} onChange={(e) => setSortKey(e.target.value as keyof Equipment['status'])}>
+                    <select onChange={(e) => setSortKey(e.target.value as keyof Equipment['status'])}>
                         <option value="pow">pow</option>
                         <option value="int">int</option>
                         <option value="vit">vit</option>
@@ -74,24 +62,24 @@ const EquipmentSearchModal: React.FC<Props> = ({ isOpen, onRequestClose,category
             </div>
             <div>
                 <h3>Search Results</h3>
-                <ul>
+                <div className="equipment-list">
                     {currentItems.map((equipment) => (
-                        <li key={equipment.id}>{equipment.name}</li>
+                        <EquipmentCard key={equipment.id} equipment={equipment} />
                     ))}
-                </ul>
+                </div>
             </div>
             <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
+                previousLabel={"◁"}
+                nextLabel={"▷"}
                 breakLabel={"..."}
                 pageCount={pageCount}
                 marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
+                pageRangeDisplayed={2}
                 onPageChange={handlePageClick}
                 containerClassName={"pagination"}
                 activeClassName={"active"}
             />
-            <button onClick={onRequestClose}>Close</button>
+            <button className="button" onClick={onRequestClose}>Close</button>
         </Modal>
     );
 };

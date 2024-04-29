@@ -24,10 +24,10 @@ const MyRoomScreen: React.FC = () => {
   return (
     <div style={{ textAlign: 'center', marginTop: '20%' }}>
       <h1>My Room</h1>
-      <button onClick={openModal}>Search Equipment</button>
+      <button className="button" onClick={openModal}>Search Equipment</button>
       <EquipmentSearchModal isOpen={modalIsOpen} onRequestClose={closeModal} category='武器' equipmentList={equipmentList} />
       <Link to="/">
-        <button>Back to Menu</button>
+        <button className="button">Back to Menu</button>
       </Link>
     </div>
   );
