@@ -5,8 +5,8 @@ export interface Status {
     vit: number; // 体力
     spd: number; // スピード
     luk: number; // 運
-    hp: number;  // ヒットポイント
-    sp: number;  // スキルポイント
+    HP: number;  // ヒットポイント
+    SP: number;  // スキルポイント
     ATK: number; // 物理攻撃力
     DEF: number; // 物理防御力
     MAT: number; // 魔法攻撃力
