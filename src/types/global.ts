@@ -19,6 +19,40 @@ export interface Status {
     DRN: number; // 吸収
 }
 
+export interface ExtendedStatus {
+    HP: number;  // ヒットポイント
+    SP: number;  // スキルポイント
+    ATK: number; // 物理攻撃力
+    DEF: number; // 物理防御力
+    MAT: number; // 魔法攻撃力
+    MDF: number; // 魔法防御力
+    HPR: number; // HP再生率
+    SPR: number; // SP再生率
+    EXP: number; // 経験値
+    PET: number; // 捕獲率
+    MOV: number; // 移動速度
+    DRN: number; // 吸収
+}
+
+export interface CharaStatus{
+    LV: number;
+    pow: number; // 力
+    int: number; // 知恵
+    spd: number; // スピード
+    vit: number; // 体力
+    luk: number; // 運
+    HP: number;  // ヒットポイント
+    SP: number;  // スキルポイント
+}
+
+export interface BaseStatus{
+    pow: number; // 力
+    int: number; // 知恵
+    spd: number; // スピード
+    vit: number; // 体力
+    luk: number; // 運
+}
+
 // 装備アイテム
 export interface Equipment {
     id: string;       // 装備ID

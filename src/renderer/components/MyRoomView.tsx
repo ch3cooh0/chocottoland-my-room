@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import EquipmentSearchModal from './EquipmentSearchModal';
 import EquipmentSelection from './EquipmentSelection';
-import TotalStatsDisplay from './TotalStatsDisplay';
-import { Equipment, Status } from '../../types/global';
+import BaseStatsDisplay from './BaseStatsDisplay';
+import KagoToggleButtonGroup from './KagoToggleButtonGroup';
+import HPSPStats from './HPSPStats';
+import EXStats from './EXStats';
+import { Equipment, BaseStatus } from '../../types/global';
 
 interface MyRoomViewProps {
     selectedMainEquipments: { [key: string]: Equipment | null };
@@ -11,7 +14,6 @@ interface MyRoomViewProps {
     openModal: (category: string, type: 'main' | 'sub') => void;
     clearSelectedMainEquipment: (category: string) => void;
     clearSelectedSubEquipment: (category: string) => void;
-    totalEquipmentStats: Status;
     modalIsOpen: boolean;
     closeModal: () => void;
     selectedCategory: string | null;
@@ -19,6 +21,10 @@ interface MyRoomViewProps {
     handleMainEquipmentSelect: (equipment: Equipment) => void;
     handleSubEquipmentSelect: (equipment: Equipment) => void;
     selectMainOrSub: 'main' | 'sub';
+    kagoType: '大天使の加護'|'妖精王の祝福物理'|'妖精王の祝福魔法'|'明王の鼓舞陽'|'明王の守護陰'|'祝福の蒼盾'|'邪神の呪詛' | null;
+    handleToggleChange: (type: '大天使の加護'|'妖精王の祝福物理'|'妖精王の祝福魔法'|'明王の鼓舞陽'|'明王の守護陰'|'祝福の蒼盾'|'邪神の呪詛') => void;
+    baseStatus: BaseStatus;
+    displayStatus: BaseStatus;
 }
 
 const MyRoomView: React.FC<MyRoomViewProps> = ({
@@ -27,7 +33,6 @@ const MyRoomView: React.FC<MyRoomViewProps> = ({
     openModal,
     clearSelectedMainEquipment,
     clearSelectedSubEquipment,
-    totalEquipmentStats,
     modalIsOpen,
     closeModal,
     selectedCategory,
@@ -35,9 +40,13 @@ const MyRoomView: React.FC<MyRoomViewProps> = ({
     handleMainEquipmentSelect,
     handleSubEquipmentSelect,
     selectMainOrSub,
+    kagoType,
+    handleToggleChange,
+    baseStatus,
+    displayStatus,
 }) => {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', minHeight: '100vh', paddingTop: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', minHeight: '100vh', paddingTop: '400px' }}>
             <h1>My Room</h1>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '2px' }}>
                 <EquipmentSelection
@@ -55,7 +64,14 @@ const MyRoomView: React.FC<MyRoomViewProps> = ({
                     type="sub"
                 />
             </div>
-            <TotalStatsDisplay totalStats={totalEquipmentStats} />
+            <BaseStatsDisplay baseStatus={baseStatus} displayStatus={displayStatus} />
+            <HPSPStats label="HP" value={100} />
+            <HPSPStats label="SP" value={100} />
+            <EXStats label="EXP" value={100} />
+            <KagoToggleButtonGroup
+                kagoType={kagoType}
+                handleToggleChange={handleToggleChange}
+            />
             <EquipmentSearchModal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}

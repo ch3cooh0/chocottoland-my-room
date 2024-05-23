@@ -1,0 +1,90 @@
+/* トグルスイッチのスタイル */
+.toggle-switch {
+    position: relative;
+    width: 60px;
+    display: inline-block;
+    text-align: left;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    margin: 0px;
+    background-color: #f44336;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.toggle-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+.toggle-inner:before,
+.toggle-inner:after {
+    display: block;
+    float: left;
+    width: 50%;
+    height: 30px;
+    padding: 0;
+    line-height: 30px;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+.toggle-inner:before {
+    /* content: "昇順"; */
+    padding-left: 10px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.toggle-inner:after {
+    /* content: "降順"; */
+    padding-right: 10px;
+    background-color: #f44336;
+    color: white;
+    text-align: right;
+}
+
+.toggle-switch .toggle-switch {
+    display: block;
+    width: 26px;
+    height: 26px;
+    margin: 0px;
+    background: #fff;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 32px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    transition: all 0.3s ease-in 0s;
+}
+
+input:checked + .toggle-label .toggle-inner {
+    margin-left: 0;
+}
+
+input:checked + .toggle-label {
+    background-color: #4CAF50; /* チェックされた状態は昇順 */
+}
+
+input:checked + .toggle-label .toggle-switch {
+    right: 0px;
+}
