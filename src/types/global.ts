@@ -80,11 +80,28 @@ export interface Equipments {
     clothes: Equipped | null;
 }
 
+export interface ComboEquipment {
+    combo_id: string;
+    part: string;
+    equipment_id: string;
+    count: number;
+    need: boolean;
+}
+
+export interface ComboStatus {
+    combo_id: string;
+    status: Status;
+    group_id: string;
+    text: string;
+}
+
 // グローバルなWindowインターフェースを拡張
 export interface Window {
     electronAPI: {
       loadEquipmentData: () => void;
       onDataLoaded: (callback: (event: any, data: { data: Equipment[], error?: string }) => void) => void;
+      loadComboData: () => void;
+      onComboDataLoaded: (callback: (event: any, data: { comboStatus: ComboStatus[], comboEquipment: ComboEquipment[], error?: string }) => void) => void;
       // その他のカスタムAPIメソッドも追加可能...
     };
   }

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Equipment, Status, CharaStatus, BaseStatus ,ExtendedStatus} from '../../types/global';
+import { Equipment, Status, CharaStatus, BaseStatus ,ExtendedStatus, ComboStatus, ComboEquipment} from '../../types/global';
 import MyRoomView from './MyRoomView';
 
 
 
 const MyRoomScreen: React.FC = () => {
   const [equipmentList, setEquipments] = useState<Equipment[]>([]);
+  const [comboStatusList, setComboStatusList] = useState<ComboStatus[]>([]);
+  const [comboEquipmentList, setComboEquipmentList] = useState<ComboEquipment[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedMainEquipments, setSelectedMainEquipments] = useState<{ [key: string]: Equipment | null }>({
@@ -237,7 +239,42 @@ const MyRoomScreen: React.FC = () => {
     relatedStatus.EXP = avatarStatus.EXP  + helmStatus.EXP + stoneStatus.EXP + beltStatus.EXP + totalEquipmentStats.EXP;
     return relatedStatus;
   }
+  const calcComboStatus = () => {
+    const comboStatus: Status = { pow: 0, int: 0, vit: 0, spd: 0, luk: 0, HP: 0, SP: 0, ATK: 0, DEF: 0, MAT: 0, MDF: 0, HPR: 0, SPR: 0, EXP: 0, PET: 0, MOV: 0, DRN: 0 };
+    const selectedComboEquipmentsByComboId = comboEquipmentList.reduce((acc, comboEquipment) => {
+      if (Object.values(selectedMainEquipments).some(equipment => equipment && equipment.id === comboEquipment.equipment_id)) {
+        if (!acc[comboEquipment.combo_id]) {
+          acc[comboEquipment.combo_id] = [];
+        }
+        acc[comboEquipment.combo_id].push(comboEquipment);
+      }
+      return acc;
+    }, {});
+    // selectedComboEquipmentsByComboIdから発動条件を満たしている物のみを取得する。
+    const filteredComboEquipments = Object.entries(selectedComboEquipmentsByComboId).filter(([combo_id, comboEquipments]) => {
+      // 効果発動に必要な装備数
+      const num = (comboEquipments as ComboEquipment[])[0].count;
+      return (comboEquipments as ComboEquipment[]).length >= num;
+    });
+    // 反映するセット効果(combo_id)をfilteredComboEquipmentsから決定する。
+    // group_idが同一の場合は、countの大きいものを優先する。
+    const comboEffects = filteredComboEquipments.reduce((acc, [combo_id, comboEquipments]) => {
+      const groupId = comboStatusList.find(combo => combo.combo_id === combo_id).group_id;
+      if (!acc[groupId] || acc[groupId].count < comboEquipments[0].count) {
+        acc[groupId] = { combo_id, count: comboEquipments[0].count };
+      }
+      return acc;
+    }, {});
 
+    Object.values(comboEffects).forEach(({ combo_id }) => {
+      const combo = comboStatusList.find(combo => combo.combo_id === combo_id);
+      Object.keys(combo.status).forEach(stat => {
+        comboStatus[stat] += combo.status[stat];
+      });
+    });
+    
+    return comboStatus;
+  }
   const calculateTotalEquipmentStats = () => {
     const totalEquipmentStats: Status = { pow: 0, int: 0, vit: 0, spd: 0, luk: 0, HP: 0, SP: 0, ATK: 0, DEF: 0, MAT: 0, MDF: 0, HPR: 0, SPR: 0, EXP: 0, PET: 0, MOV: 0, DRN: 0 };
     Object.values(selectedMainEquipments).forEach((equipment) => {
@@ -277,6 +314,10 @@ const MyRoomScreen: React.FC = () => {
       }
     });
     // TODO:セット効果とアニバ装備等のステータスボーナスを計算する。
+    const comboStatus = calcComboStatus();
+    Object.keys(comboStatus).forEach(stat => {
+      totalEquipmentStats[stat] += comboStatus[stat];
+    });
     
     return totalEquipmentStats;
   };
@@ -360,6 +401,15 @@ const MyRoomScreen: React.FC = () => {
         setEquipments(data);
       }
     });
+    window.electronAPI.loadComboData();
+    window.electronAPI.onComboDataLoaded((event, { comboStatus, comboEquipment, error }) => {
+      if (error) {
+        console.error('Failed to load data:', error);
+      } else {
+        setComboStatusList(comboStatus);
+        setComboEquipmentList(comboEquipment);
+      }
+    });
   }, []);
   useEffect(() => {
     const totalEquipmentStats=calculateTotalEquipmentStats();
@@ -387,6 +437,8 @@ const MyRoomScreen: React.FC = () => {
       closeModal={closeModal}
       selectedCategory={selectedCategory}
       equipmentList={equipmentList}
+      comboStatusList={comboStatusList}
+      comboEquipmentList={comboEquipmentList}
       handleMainEquipmentSelect={handleMainEquipmentSelect}
       handleSubEquipmentSelect={handleSubEquipmentSelect}
       selectMainOrSub={selectMainOrSub}

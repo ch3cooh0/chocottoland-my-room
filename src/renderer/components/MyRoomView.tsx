@@ -6,7 +6,7 @@ import BaseStatsDisplay from './BaseStatsDisplay';
 import KagoToggleButtonGroup from './KagoToggleButtonGroup';
 import HPSPStats from './HPSPStats';
 import EXStats from './EXStats';
-import { Equipment, BaseStatus } from '../../types/global';
+import { Equipment, BaseStatus, ComboStatus, ComboEquipment } from '../../types/global';
 
 interface MyRoomViewProps {
     selectedMainEquipments: { [key: string]: Equipment | null };
@@ -18,6 +18,8 @@ interface MyRoomViewProps {
     closeModal: () => void;
     selectedCategory: string | null;
     equipmentList: Equipment[];
+    comboStatusList: ComboStatus[];
+    comboEquipmentList: ComboEquipment[];
     handleMainEquipmentSelect: (equipment: Equipment) => void;
     handleSubEquipmentSelect: (equipment: Equipment) => void;
     selectMainOrSub: 'main' | 'sub';
@@ -37,6 +39,8 @@ const MyRoomView: React.FC<MyRoomViewProps> = ({
     closeModal,
     selectedCategory,
     equipmentList,
+    comboStatusList,
+    comboEquipmentList,
     handleMainEquipmentSelect,
     handleSubEquipmentSelect,
     selectMainOrSub,

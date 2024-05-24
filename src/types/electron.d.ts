@@ -1,4 +1,4 @@
-import { Equipment } from './global';
+import { Equipment, ComboStatus, ComboEquipment } from './global';
 // Electron の Process 型拡張
 declare namespace NodeJS {
   interface Process {
@@ -11,6 +11,8 @@ declare global {
     electronAPI: {
       loadEquipmentData: () => void;
       onDataLoaded: (callback: (event: any, data: { data: Equipment[], error?: string }) => void) => void;
+      loadComboData: () => void;
+      onComboDataLoaded: (callback: (event: any, data: { comboStatus: ComboStatus[], comboEquipment: ComboEquipment[], error?: string }) => void) => void;
       // その他のカスタムAPIメソッドも追加可能...
     };
   }

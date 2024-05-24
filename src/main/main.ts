@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu, MenuItem, ipcMain } from 'electron';
 import path from 'path';
-import { loadEquipmentData } from './equipmentDataLoader';
+import { loadEquipmentData ,loadComboData} from './equipmentDataLoader';
 
 function createWindow(): void {
     const mainWindow = new BrowserWindow({
@@ -49,9 +49,16 @@ app.whenReady().then(() => {
     });
 });
 
+// Start of Selection
 ipcMain.on('load-equipment-data', (event) => {
-    loadEquipmentData(event)
+    loadEquipmentData(event);
 });
+
+ipcMain.on('load-combo-data', (event) => {
+    loadComboData(event);
+});
+
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
