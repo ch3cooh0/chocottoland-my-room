@@ -9,7 +9,7 @@ const EXStats: React.FC<EXStatsProps> = ({ label, value }) => {
     const barStyle = {
         display: 'flex',
         alignItems: 'center',
-        padding: '2px 8px',
+        padding: '0px',
         fontFamily: 'Arial, sans-serif',
         fontSize: '16px',
         color: '#4a4a4a',
@@ -21,6 +21,8 @@ const EXStats: React.FC<EXStatsProps> = ({ label, value }) => {
         padding: '2px 6px',
         borderRadius: '4px',
         fontWeight: 'bold',
+        width: '3em',
+        textAlign: 'center' as 'center',
     };
 
     const valueStyle = {

@@ -1,19 +1,20 @@
 import React from 'react';
-import { BaseStatus } from '../../types/global';
+import { BaseStatus, CharaStatus } from '../../types/global';
 import StatLabel from './StatLabel';
 import StatValue from './StatValue';
 
 interface TotalStatsDisplayProps {
+    characterStatus: CharaStatus;
     baseStatus: BaseStatus;
     displayStatus: BaseStatus;
 }
 
-const BaseStatsDisplay: React.FC<TotalStatsDisplayProps> = ({ baseStatus, displayStatus }) => {
+const BaseStatsDisplay: React.FC<TotalStatsDisplayProps> = ({ baseStatus, displayStatus, characterStatus }) => {
     return (
         <div>
             <h2>ステータス</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '5px' }}>
-                <StatLabel label="" />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2px' }}>
+                <StatLabel label={`Lv.${characterStatus.LV}`} />
                 <StatLabel label="キャラ" />
                 <StatLabel label="装備" />
                 <StatLabel label="POW" />

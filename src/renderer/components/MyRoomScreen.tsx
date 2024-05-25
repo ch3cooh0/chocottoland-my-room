@@ -33,7 +33,7 @@ const MyRoomScreen: React.FC = () => {
   const [selectMainOrSub, setSelectMainOrSub] = useState<'main' | 'sub'>('main');
 
   // キャラクターのステータス
-  const [characterStatus, setCharacterStatus] = useState<CharaStatus>({ LV: 99, pow: 0, int: 0, spd: 0, vit: 0, luk: 0, HP: 0, SP: 0 });
+  const [characterStatus, setCharacterStatus] = useState<CharaStatus>({ LV: 99, pow: 1, int: 1, spd: 1, vit: 1, luk: 1, HP: 1, SP: 1 });
   // アバターのステータス
   const [avatarStatus, setAvatarStatus] = useState<Status>({ ATK: 0, DEF: 0, MAT: 0, MDF: 0, pow: 0, int: 0, spd: 0, vit: 0, luk: 0, HP: 0, SP: 0, MOV: 0, HPR: 0, SPR: 0, DRN: 0, PET: 0, EXP: 0 });
   // 耳マロ・クリマロのステータス
@@ -43,7 +43,7 @@ const MyRoomScreen: React.FC = () => {
   // ベルトのステータス
   const [beltStatus, setBeltStatus] = useState<Status>({ ATK: 0, DEF: 0, MAT: 0, MDF: 0, pow: 0, int: 0, spd: 0, vit: 0, luk: 0, HP: 0, SP: 0, MOV: 0, HPR: 0, SPR: 0, DRN: 0, PET: 0, EXP: 0 });
   // 表示ステータス(キャラクター欄)
-  const [baseStatus, setBaseStatus] = useState<BaseStatus>({ pow: 0, int: 0, spd: 0, vit: 0, luk: 0 });
+  const [baseStatus, setBaseStatus] = useState<BaseStatus>({ pow: 1, int: 1, spd: 1, vit: 1, luk: 1 });
   // 表示ステータス(装備欄)
   const [displayStatus, setDisplayStatus] = useState<BaseStatus>({ pow: 0, int: 0, spd: 0, vit: 0, luk: 0 });
   // 表示ステータス（基礎以外）
@@ -69,15 +69,21 @@ const MyRoomScreen: React.FC = () => {
     MAT: false,
     MDF: false
   });
+  const handleToggleChangeDoping = (type: 'ATK'|'DEF'|'MAT'|'MDF') => {
+    setDopingFlag(prevDopingFlag => ({
+      ...prevDopingFlag,
+      [type]: !prevDopingFlag[type]
+    }));
+  };
 
 
   const calcBaseStatus = () => {
-    const baseStatus: BaseStatus = { pow: 0, int: 0, spd: 0, vit: 0, luk: 0 };
-    characterStatus.pow = characterStatus.pow;
-    characterStatus.int = characterStatus.int;
-    characterStatus.spd = characterStatus.spd;
-    characterStatus.vit = characterStatus.vit;
-    characterStatus.luk = characterStatus.luk;
+    const baseStatus: BaseStatus = { pow: 1, int: 1, spd: 1, vit: 1, luk: 1 };
+    baseStatus.pow = characterStatus.pow;
+    baseStatus.int = characterStatus.int;
+    baseStatus.spd = characterStatus.spd;
+    baseStatus.vit = characterStatus.vit;
+    baseStatus.luk = characterStatus.luk;
 
     // チョコビタがあればステータスを増加
     if (chocoBitaFlag.all) {
@@ -165,6 +171,7 @@ const MyRoomScreen: React.FC = () => {
     extraStatus.PET = avatarStatus.PET  + helmStatus.PET + stoneStatus.PET + beltStatus.PET + totalEquipmentStats.PET;
     extraStatus.EXP = avatarStatus.EXP  + helmStatus.EXP + stoneStatus.EXP + beltStatus.EXP + totalEquipmentStats.EXP;
 
+    
     const pow = characterStatus.pow + avatarStatus.pow  + helmStatus.pow + stoneStatus.pow + beltStatus.pow + totalEquipmentStats.pow;
     const int = characterStatus.int + avatarStatus.int  + helmStatus.int + stoneStatus.int + beltStatus.int + totalEquipmentStats.int;
     const spd = characterStatus.spd + avatarStatus.spd  + helmStatus.spd + stoneStatus.spd + beltStatus.spd + totalEquipmentStats.spd;
@@ -173,20 +180,20 @@ const MyRoomScreen: React.FC = () => {
 
     switch (kagoType){
       case '大天使の加護':
-        extraStatus.ATK = Math.ceil(extraStatus.ATK * 1.2) + Math.ceil(pow * 1.2) * 3;
-        extraStatus.DEF = Math.ceil(extraStatus.DEF * 1.2) + Math.ceil(vit * 1.2) * 2;
-        extraStatus.MAT = Math.ceil(extraStatus.MAT * 1.2) + Math.ceil(int * 1.2) * 2;
-        extraStatus.MDF = Math.ceil(extraStatus.MDF * 1.2) + Math.ceil(int * 1.2) * 15;
+        extraStatus.ATK = Math.ceil(extraStatus.ATK * 1.2) + Math.ceil(pow * 0.2) * 3;
+        extraStatus.DEF = Math.ceil(extraStatus.DEF * 1.2) + Math.ceil(vit * 0.2) * 2;
+        extraStatus.MAT = Math.ceil(extraStatus.MAT * 1.2) + Math.ceil(int * 0.2) * 2;
+        extraStatus.MDF = Math.ceil(extraStatus.MDF * 1.2) + Math.ceil(int * 0.2) * 15;
         extraStatus.HP = Math.ceil(extraStatus.HP * 5);
         extraStatus.SP = Math.ceil(extraStatus.SP * 5);
         extraStatus.HPR += 100; 
         extraStatus.SPR += 100;
         break;
       case '妖精王の祝福物理':
-        extraStatus.ATK = Math.ceil(extraStatus.ATK * 1.3) + Math.ceil(pow * 1.3) * 3;
+        extraStatus.ATK = Math.ceil(extraStatus.ATK * 1.3) + Math.ceil(pow * 0.3) * 3;
         break;
       case '妖精王の祝福魔法':
-        extraStatus.MAT = Math.ceil(extraStatus.MAT * 1.3) + Math.ceil(int * 1.3) * 2;
+        extraStatus.MAT = Math.ceil(extraStatus.MAT * 1.3) + Math.ceil(int * 0.3) * 2;
         break;
       case '明王の鼓舞陽':
         extraStatus.HP = Math.ceil(extraStatus.HP * 3);
@@ -201,11 +208,18 @@ const MyRoomScreen: React.FC = () => {
         extraStatus.SPR += 50;
         break;
       case '祝福の蒼盾':
-        extraStatus.DEF = Math.ceil(extraStatus.DEF) + Math.ceil(vit * 1.3) * 2;
+        extraStatus.DEF = Math.ceil(extraStatus.DEF) + Math.ceil(vit * 0.3) * 2;
         break;
       case '邪神の呪詛':
         break;
     }
+
+    // 加護対象外ステータス反映
+    extraStatus.ATK += Math.ceil(characterStatus.pow + avatarStatus.pow  + helmStatus.pow + stoneStatus.pow + beltStatus.pow + totalEquipmentStats.pow) * 3;
+    extraStatus.DEF += Math.ceil(characterStatus.vit + avatarStatus.vit  + helmStatus.vit + stoneStatus.vit + beltStatus.vit + totalEquipmentStats.vit) * 2;
+    extraStatus.MAT += Math.ceil(characterStatus.int + avatarStatus.int  + helmStatus.int + stoneStatus.int + beltStatus.int + totalEquipmentStats.int) * 2;
+    extraStatus.MDF += Math.ceil(characterStatus.int + avatarStatus.int  + helmStatus.int + stoneStatus.int + beltStatus.int + totalEquipmentStats.int) * 15;
+
     // ドーピング結果反映
     extraStatus.ATK += dopingStatus.ATK;
     extraStatus.DEF += dopingStatus.DEF;
@@ -313,7 +327,7 @@ const MyRoomScreen: React.FC = () => {
         totalEquipmentStats.MDF += Math.ceil(equipment.status.MDF / 2) || 0;
       }
     });
-    // TODO:セット効果とアニバ装備等のステータスボーナスを計算する。
+    // TODO:アニバ装備等のステータスボーナスを計算する。
     const comboStatus = calcComboStatus();
     Object.keys(comboStatus).forEach(stat => {
       totalEquipmentStats[stat] += comboStatus[stat];
@@ -324,24 +338,23 @@ const MyRoomScreen: React.FC = () => {
 
   const calcDopingStatus = () => {
     const dopingStatus: Status = { ATK: 0, DEF: 0, MAT: 0, MDF: 0, pow: 0, int: 0, spd: 0, vit: 0, luk: 0, HP: 0, SP: 0, MOV: 0, HPR: 0, SPR: 0, DRN: 0, PET: 0, EXP: 0 };
-    const baseStatus: BaseStatus = calcBaseStatus();
     const totalEquipmentStats = calculateTotalEquipmentStats();
     const relatedStatus = calcRelatedStatusForDoping(totalEquipmentStats);
     if (dopingFlag.ATK) {
-      const p = (baseStatus.pow + totalEquipmentStats.pow + characterStatus.LV) / 100;
+      const p = (baseStatus.pow + totalEquipmentStats.pow + characterStatus.LV - 100) / 100;
       dopingStatus.ATK = Math.ceil( ((baseStatus.pow + totalEquipmentStats.pow) * 2 + relatedStatus.ATK) * p);
     }
     if (dopingFlag.DEF) {
-      const p = (baseStatus.vit + totalEquipmentStats.vit + characterStatus.LV) / 100;
+      const p = (baseStatus.vit + totalEquipmentStats.vit + characterStatus.LV - 100) / 100;
       dopingStatus.DEF = Math.ceil( ((baseStatus.vit + totalEquipmentStats.vit) * 2 + relatedStatus.DEF) * p);
     }
     if (dopingFlag.MAT) {
-      const p = (baseStatus.int + totalEquipmentStats.int + characterStatus.LV) / 100;
+      const p = (baseStatus.int + totalEquipmentStats.int + characterStatus.LV - 100) / 100;
       dopingStatus.MAT = Math.ceil( ((baseStatus.int + totalEquipmentStats.int) * 2 + relatedStatus.MAT) * p);
     }
     if (dopingFlag.MDF) {
-      const pi = (baseStatus.int + totalEquipmentStats.int + characterStatus.LV) / 100;
-      const pv = (baseStatus.vit + totalEquipmentStats.vit + characterStatus.LV) / 100;
+      const pi = (baseStatus.int + totalEquipmentStats.int + characterStatus.LV-100) / 100;
+      const pv = (baseStatus.vit + totalEquipmentStats.vit + characterStatus.LV-100) / 100;
       const MDFI =  ((baseStatus.int + totalEquipmentStats.int) * 2 + relatedStatus.MDF) * pi;
       const MDFV =  ((baseStatus.vit + totalEquipmentStats.vit) * 2 + relatedStatus.MDF) * pv;
       dopingStatus.MDF = Math.ceil(Math.max(MDFI, MDFV));
@@ -421,7 +434,7 @@ const MyRoomScreen: React.FC = () => {
     setBaseStatus(baseStatus);
     setExtendedStatus(extraStatus);
     setDisplayStatus(displayStatus);
-  }, [selectedMainEquipments, selectedSubEquipments, characterStatus, avatarStatus, helmStatus, stoneStatus, beltStatus]);
+  }, [selectedMainEquipments, selectedSubEquipments, characterStatus, avatarStatus, helmStatus, stoneStatus, beltStatus,dopingStatus]);
 
   
 
@@ -437,15 +450,17 @@ const MyRoomScreen: React.FC = () => {
       closeModal={closeModal}
       selectedCategory={selectedCategory}
       equipmentList={equipmentList}
-      comboStatusList={comboStatusList}
-      comboEquipmentList={comboEquipmentList}
       handleMainEquipmentSelect={handleMainEquipmentSelect}
       handleSubEquipmentSelect={handleSubEquipmentSelect}
       selectMainOrSub={selectMainOrSub}
       kagoType={kagoType}
       handleToggleChange={handleToggleChange}
       baseStatus={baseStatus}
+      extendedStatus={extendedStatus}
       displayStatus={displayStatus}
+      calcDopingStatus={calcDopingStatus}
+      handleToggleChangeDoping={handleToggleChangeDoping}
+      characterStatus={characterStatus}
     />
   );
 };
