@@ -1,0 +1,12 @@
+[
+  {
+    "id": "7da9fdcf-befa-4f68-a26c-c4225a5f325d",
+    "name": "銅の剣",
+    "iconid": "どうのつるぎ",
+    "reinforceLevel": 11,
+    "core": {
+      "pow": 1,
+      "int": 2
+    }
+  }
+]
