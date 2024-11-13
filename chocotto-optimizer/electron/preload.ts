@@ -1,5 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron'
-import { EquipmentSimple } from '../types/types'
+import { Category, Equipment, EquipmentInstance, EquipmentSimple, StatusKey } from '../types/types'
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
@@ -27,4 +27,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   writeEquipmentSimpleToJSON: (path: string, equipments: EquipmentSimple[]) => ipcRenderer.invoke('writeEquipmentSimpleToJSON', path, equipments),
   showSaveDialog: (defaultFileName: string) => ipcRenderer.invoke('show-save-dialog', defaultFileName),
   showOpenDialog: () => ipcRenderer.invoke('show-open-dialog'),
+  convertEquipmentSimplesToEquipmentInstances: (equipmentSimples: EquipmentSimple[]) => ipcRenderer.invoke('convertEquipmentSimplesToEquipmentInstances', equipmentSimples),
+  convertEquipmentInstanceToEquipmentSimple: (equipmentInstance: EquipmentInstance) => ipcRenderer.invoke('convertEquipmentInstanceToEquipmentSimple', equipmentInstance),
+  convertEquipmentToEquipmentInstance: (equipment: Equipment) => ipcRenderer.invoke('convertEquipmentToEquipmentInstance', equipment),
+  searchEquipment: (fixCategory: Category, searchName: string, sortKey: StatusKey, sortOrder: 'asc' | 'desc') => ipcRenderer.invoke('searchEquipment', fixCategory, searchName, sortKey, sortOrder),
 })

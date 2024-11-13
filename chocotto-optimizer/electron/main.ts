@@ -3,21 +3,13 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { loadEquipmentFromCSV, loadEquipmentSimpleFromJSON } from './modules/loader'
 import { writeEquipmentSimpleToJSON } from './modules/writer'
+import { EquipmentDTO } from './modules/dto'
+import { StatusKey } from '../types/types'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
 process.env.APP_ROOT = path.join(__dirname, '..')
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
@@ -34,22 +26,18 @@ function createWindow() {
     },
   })
 
-  // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
   })
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
+    win.webContents.openDevTools()
   } else {
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -58,12 +46,14 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
 })
+
+/**
+ * ハンドル定義
+ */
 
 ipcMain.handle('loadEquipmentFromCSV', async (event, path) => {
   try {
@@ -121,6 +111,38 @@ ipcMain.handle('show-open-dialog', async (event) => {
     filters: [{ name: 'Text Files', extensions: ['json'] }],
   });
   return result.filePaths;
+});
+
+ipcMain.handle('convertEquipmentSimplesToEquipmentInstances', async (event, equipmentSimples) => {
+  console.debug(event);
+  const equipmentMaster = await loadEquipmentFromCSV('./data/equipments.csv');
+  const equipmentInstances = EquipmentDTO.convertEquipmentSimplesToEquipmentInstances(equipmentSimples, equipmentMaster);
+  return equipmentInstances;
+});
+
+ipcMain.handle('convertEquipmentInstanceToEquipmentSimple', async (event, equipmentInstance) => {
+  console.debug(event);
+  return EquipmentDTO.convertEquipmentInstanceToEquipmentSimple(equipmentInstance);
+});
+
+ipcMain.handle('convertEquipmentToEquipmentInstance', async (event, equipment) => {
+  console.debug(event);
+  return EquipmentDTO.convertEquipmentToEquipmentInstance(equipment);
+});
+
+ipcMain.handle('searchEquipment', async (event, fixCategory, searchName, sortKey, sortOrder) => {
+  console.debug(event);
+  const equipmentMaster = await loadEquipmentFromCSV('./data/equipments.csv');
+  const searchedEquipments = equipmentMaster.filter((equipment) => {
+    return equipment.category === fixCategory && (searchName === '' || equipment.name.includes(searchName));
+  }).sort((a, b) => {
+    if (sortKey === '') return 0;
+    return a[sortKey as StatusKey] > b[sortKey as StatusKey] ? 1 : -1;
+  });
+  if (sortOrder === 'desc') {
+    searchedEquipments.reverse();
+  }
+  return searchedEquipments;
 });
 
 app.whenReady().then(createWindow)

@@ -68,5 +68,13 @@ export const EquipmentDTO={
      */
     convertEquipmentInstancesToEquipmentSimples: (equipmentInstances: EquipmentInstance[]): EquipmentSimple[] => {
         return equipmentInstances.map(equipmentInstance => EquipmentDTO.convertEquipmentInstanceToEquipmentSimple(equipmentInstance));
+    },
+    convertEquipmentToEquipmentInstance: (equipment: Equipment): EquipmentInstance => {
+        return {
+            ...equipment,
+            uuid: uuidv4(),
+            reinforceLevel: 0,
+            core: {}
+        };
     }
 }

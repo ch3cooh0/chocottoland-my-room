@@ -11,7 +11,6 @@ export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
                 const equipment: Equipment = {
                     id: row.id,
                     name: row.name,
-                    name_kn: row.name_kn,
                     category: row.category as Category,
                     lv: parseInt(row.lv, 10),
                     pow: parseInt(row.pow, 10),

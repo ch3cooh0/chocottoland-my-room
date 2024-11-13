@@ -1,33 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
-import { Equipment, EquipmentInstance, EquipmentSimple } from '../types/types';
+import { EquipmentInstance, EquipmentSimple } from '../types/types';
 import WarehouseComponent from './components/WarehouseComponent';
 import { EquipmentDTO } from '../electron/modules/dto';
 
 function App() {
-  const [equipmentMaster, setEquipmentMaster] = useState<Equipment[]>([]);
+  // 倉庫
   const [equipmentInstances, setEquipmentInstances] = useState<EquipmentInstance[]>([]);
-  const loadEquipmentMaster = async () => {
-    const equipments = await window.ipcRenderer.invoke('loadEquipmentFromCSV', './data/equipments.csv');
-    setEquipmentMaster(equipments);
-  }
+  // 倉庫読込
   const loadWarehouse = async (loadPath: string) => {
     const loadedEquipments: EquipmentSimple[] = await window.ipcRenderer.invoke('loadEquipmentSimpleFromJSON', loadPath);
-    const convertedEquipments = EquipmentDTO.convertEquipmentSimplesToEquipmentInstances(loadedEquipments, equipmentMaster);
+    const convertedEquipments = await window.ipcRenderer.invoke('convertEquipmentSimplesToEquipmentInstances', loadedEquipments);
     setEquipmentInstances(convertedEquipments);
-    console.log(convertedEquipments);
   };
+  // 倉庫保存
   const writeWarehouse = async (savePath: string) => {
     const savedEquipments = EquipmentDTO.convertEquipmentInstancesToEquipmentSimples(equipmentInstances);
     await window.ipcRenderer.invoke('writeEquipmentSimpleToJSON', savePath, savedEquipments);
   };
-  useEffect(() => {
-    loadEquipmentMaster();
-  }, []);
   return (
     <>
       <h1>Chocottoland Optimizer</h1>
-      <WarehouseComponent equipmentMaster={equipmentMaster} equipmentInstances={equipmentInstances} loadWarehouse={loadWarehouse} writeWarehouse={writeWarehouse} />
+      <WarehouseComponent equipmentInstances={equipmentInstances} loadWarehouse={loadWarehouse} writeWarehouse={writeWarehouse} setEquipmentInstances={setEquipmentInstances} />
     </>
   )
 }
