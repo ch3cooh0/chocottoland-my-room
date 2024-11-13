@@ -1,11 +1,140 @@
 [
   {
-    "id": "7da9fdcf-befa-4f68-a26c-c4225a5f325d",
-    "name": "銅の剣",
-    "reinforceLevel": 11,
-    "core": {
-      "pow": 1,
-      "int": 2
-    }
+    "id": "9f975a40-4637-4d32-aa7e-197f3fe59356",
+    "name": "名刀・須虹流",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "e06c2528-2ff8-4102-b981-2716b70800c0",
+    "name": "ロイバーバレッタ",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "16ca83f1-065c-4739-bc04-cdd01ec5a71b",
+    "name": "ロイバーハイネ",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "cbd7b428-bd42-40f6-a5ed-40516265cbcf",
+    "name": "ロイバーネック",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "47afcb59-92ad-457c-892f-5c0ee1137294",
+    "name": "ロイバーブラスレ",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "0c1602d3-ff21-4282-af60-1d0acec07019",
+    "name": "ロイバーバックラー",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "7192dae8-b219-420d-be0a-870d9a43c16f",
+    "name": "ロイバーオペラ",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "a61f1320-6d4e-40f4-bb31-ccf68dcb7e60",
+    "name": "ロイバーダガー",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "f19109a7-798f-4913-82fe-75e1d4c977bc",
+    "name": "聖氷剣クインタニア",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "968605ff-52f5-41ba-970a-3a6033865f99",
+    "name": "虹雲威胴鎧",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "ea61ab0d-e759-4480-bc22-4801e5b4f6da",
+    "name": "紺色印籠・虹橋",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "aec4dcdb-05ad-44a7-8d27-fac343e89177",
+    "name": "長脇差・虹輪",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "514c7d50-4f22-48bd-a46c-ecc36b12adb9",
+    "name": "背負い二振・虹彩",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "237eb937-d2db-49d9-9ffc-b9dfa3ab5376",
+    "name": "ロイバーマフラー",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "8509073e-5a3a-4cf2-a9b4-456c71d77209",
+    "name": "流離人の笠・至地",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "9d34e974-c7fc-4cd1-abdd-cbd8a665731a",
+    "name": "天藍玉フォルティス",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "187379ab-c411-47fa-8aa4-28283a302fe4",
+    "name": "17thフォースネック・装",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "0bceb552-9579-4e65-96bd-ff3d17d12fed",
+    "name": "ドラゴライズリング",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "9966057f-f6c8-4e8c-b5dd-a219d005d829",
+    "name": "パワーテックガントⅡ",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "60f40048-bfe5-402b-b41e-233b79b2c404",
+    "name": "パワーテックガント",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "4c22d297-7f75-4b55-8d3e-82abe3921743",
+    "name": "ＰＯＷアバティア",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "fea78b44-19af-4283-9c48-c0978cd9b6d5",
+    "name": "ペイルフィッシューズ",
+    "reinforceLevel": 0,
+    "core": {}
+  },
+  {
+    "id": "9cc99be5-4636-45ac-8a0b-e232aa4f3341",
+    "name": "神翼の炎舞",
+    "reinforceLevel": 0,
+    "core": {}
   }
 ]

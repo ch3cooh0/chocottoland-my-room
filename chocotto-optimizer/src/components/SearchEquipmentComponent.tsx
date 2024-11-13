@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { EquipmentInstance, Category , Equipment} from '../../types/types';
 
-const categories: Category[] = ["武器", "頭", "服", "首", "手", "盾", "背", "足"];
+const categories: Category[] = ["武器", "頭", "服", "首", "手", "盾", "背", "靴"];
 
 interface SearchEquipmentComponentProps {
   equipmentInstances: EquipmentInstance[];

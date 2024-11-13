@@ -10,7 +10,7 @@ const categories: Category[] = [
   "手",
   "盾",
   "背",
-  "足",
+  "靴",
 ];
 
 interface WarehouseComponentProps {
@@ -42,6 +42,9 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
     setSelectedCategory(category);
   };
 
+  /**
+   * ファイル読込
+   */
   const handleFileSelect = async () => {
     const filePaths = await window.ipcRenderer.invoke("show-open-dialog");
     if (filePaths.length > 0) {
@@ -51,6 +54,9 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
     }
   };
 
+  /**
+   * ファイル保存
+   */
   const handleSaveButtonClick = async () => {
     const filePath = await window.ipcRenderer.invoke(
       "show-save-dialog",
@@ -63,8 +69,12 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
       alert(filePath);
     }
   };
+
+  /**
+   * 装備削除
+   */
   const handleDeleteButtonClick = (equipment: EquipmentInstance) => {
-    console.log("削除", equipment);
+    setEquipmentInstances(equipmentInstances.filter((instance) => instance.id !== equipment.id));
   };
 
   return (
