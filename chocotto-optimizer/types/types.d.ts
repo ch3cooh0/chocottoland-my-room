@@ -19,8 +19,6 @@ export interface Equipment {
     id: string;
     // 装備名
     name: string;
-    // 装備名(カナ)
-    name_kn: string;
     // 装備のカテゴリ(部位)
     category: Category;
     lv: number;
@@ -54,18 +52,15 @@ export interface EquipmentInstance extends Equipment {
     // 強化レベル
     reinforceLevel: number;
     // 特殊コア
-    core: {
-        [key in StatusKey]: number;
-    }
+    core: Partial<{ [key in StatusKey]: number }>;
 }
 
 /**
- * 装備の簡易データを表す型(倉庫のUI/ファイル保存用)
+ * 装備の簡易データを表す型(ファイル保存用)
  */
 export interface EquipmentSimple {
     id: string;
     name: string;
-    iconid: string;
     // 強化レベル
     reinforceLevel: number;
     // 特殊コア

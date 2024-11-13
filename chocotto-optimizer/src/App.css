@@ -5,38 +5,92 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.warehouse-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.warehouse-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.25rem 0.25rem;
+  margin: 0.25rem;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+.warehouse-card p {
+  margin: 0.25rem 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+.warehouse-card button {
+  margin: 0rem 0rem;
+  padding: 0rem 0rem;
+  font-size: 1rem;
+  color: #333;
+  align-self: flex-end;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.category-button {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.card {
-  padding: 2em;
+.category-button:hover {
+  background-color: #d0d0d0;
 }
 
-.read-the-docs {
-  color: #888;
+.category-button.selected {
+  background-color: #646cff;
+  color: white;
+}
+
+.warehouse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.warehouse h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.warehouse button {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.warehouse button:hover {
+  background-color: #d0d0d0;
+}
+
+.warehouse button.selected {
+  background-color: #646cff;
+  color: white;
 }

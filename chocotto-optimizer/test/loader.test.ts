@@ -10,7 +10,6 @@ describe('loader:loadEquipmentFromCSV', () => {
         expect(equipments.length).toEqual(1);
         expect(equipments[0].id).toEqual("7da9fdcf-befa-4f68-a26c-c4225a5f325d");
         expect(equipments[0].name).toEqual("銅の剣");
-        expect(equipments[0].name_kn).toEqual("ドウノツルギ");
         expect(equipments[0].category).toEqual("武器");
         expect(equipments[0].lv).toEqual(11);
         expect(equipments[0].pow).toEqual(1);
@@ -41,7 +40,6 @@ describe('loader:loadEquipmentSimpleFromJSON', () => {
         expect(equipments.length).toEqual(1);
         expect(equipments[0].id).toEqual("7da9fdcf-befa-4f68-a26c-c4225a5f325d");
         expect(equipments[0].name).toEqual("銅の剣");
-        expect(equipments[0].iconid).toEqual("どうのつるぎ");
         expect(equipments[0].reinforceLevel).toEqual(11);
         expect(equipments[0].core).toEqual({ pow: 1, int: 2 });
     });

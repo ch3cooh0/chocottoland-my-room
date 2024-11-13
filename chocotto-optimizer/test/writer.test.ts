@@ -9,7 +9,6 @@ describe('writer:writeEquipmentSimpleToJSON', () => {
             {
                 id: "7da9fdcf-befa-4f68-a26c-c4225a5f325d",
                 name: "銅の剣",
-                iconid: "どうのつるぎ",
                 reinforceLevel: 11,
                 core: {
                     pow: 1,
@@ -24,7 +23,6 @@ describe('writer:writeEquipmentSimpleToJSON', () => {
             {
                 id: "7da9fdcf-befa-4f68-a26c-c4225a5f325d",
                 name: "銅の剣",
-                iconid: "どうのつるぎ",
                 reinforceLevel: 11,
                 core: {
                     pow: 1,
@@ -34,7 +32,6 @@ describe('writer:writeEquipmentSimpleToJSON', () => {
             {
                 id: "7da9fdcf-befa-4f68-a26c-c4225a5f325z",
                 name: "銅の盾",
-                iconid: "どうのたて",
                 reinforceLevel: 0,
                 core: {
                     pow: 1,

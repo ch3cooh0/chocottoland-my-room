@@ -25,5 +25,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   loadEquipmentFromCSV: (path: string) => ipcRenderer.invoke('loadEquipmentFromCSV', path),
   loadEquipmentSimpleFromJSON: (path: string) => ipcRenderer.invoke('loadEquipmentSimpleFromJSON', path),
   writeEquipmentSimpleToJSON: (path: string, equipments: EquipmentSimple[]) => ipcRenderer.invoke('writeEquipmentSimpleToJSON', path, equipments),
-  
+  showSaveDialog: (defaultFileName: string) => ipcRenderer.invoke('show-save-dialog', defaultFileName),
+  showOpenDialog: () => ipcRenderer.invoke('show-open-dialog'),
 })
