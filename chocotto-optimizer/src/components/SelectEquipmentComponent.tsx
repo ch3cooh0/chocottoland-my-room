@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { EquipmentInstance, Category } from "../../types/types";
+import { EquipmentInstance, Category, StatusKey, Core } from "../../types/types";
 
 interface SelectEquipmentComponentProps {
+  // 部位でフィルタ済みの装備インスタンス一覧
   equipmentInstances: EquipmentInstance[];
+  // 指定部位
   fixCategory: Category;
-  setCharacterEquipment: (equipment: {
-    [key in Category]?: EquipmentInstance;
-  }) => void;
+  // メインorサブで装備済みのインスタンスID
+  equippedInstanceUUId: string | undefined;
+  // 選択した装備をキャラクター装備に設定する関数
+  setCharacterEquipment: (equipment: EquipmentInstance) => void;
+  // 検索モーダルを閉じる関数
   handleCloseSearchModal: () => void;
 }
 
 const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
   equipmentInstances,
   fixCategory,
+  equippedInstanceUUId,
   setCharacterEquipment,
   handleCloseSearchModal,
 }) => {
@@ -33,9 +38,7 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
   };
 
   const handleSelectEquipment = async (equipment: EquipmentInstance) => {
-    setCharacterEquipment({
-      [fixCategory]: equipment,
-    });
+    setCharacterEquipment(equipment);
     handleCloseSearchModal();
   };
 
@@ -43,7 +46,8 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
     let filteredEquipments = equipmentInstances.filter(
       (equipment) =>
         equipment.category === fixCategory &&
-        equipment.name.includes(searchName)
+        equipment.name.includes(searchName) &&
+        (equippedInstanceUUId ? equipment.uuid !== equippedInstanceUUId : true)
     );
 
     if (sortKey) {
@@ -68,6 +72,21 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
   useEffect(() => {
     searchEquipment();
   }, [searchName, sortKey, sortOrder, searchEquipment]);
+
+  const createStringCoreEnhancement = (core: Core): string => {
+    const firstCoreStatusKey = Object.keys(core[1])[0];
+    const firstCoreValue = core[1][firstCoreStatusKey as unknown as StatusKey];
+    const secondCoreStatusKey = Object.keys(core[2])[0];
+    const secondCoreValue =
+      core[2][secondCoreStatusKey as unknown as StatusKey];
+    const thirdCoreStatusKey = Object.keys(core[3])[0];
+    const thirdCoreValue = core[3][thirdCoreStatusKey as unknown as StatusKey];
+    return `${
+      firstCoreStatusKey ? `${firstCoreStatusKey}:${firstCoreValue}` : ""
+    } ${
+      secondCoreStatusKey ? `${secondCoreStatusKey}:${secondCoreValue}` : ""
+    } ${thirdCoreStatusKey ? `${thirdCoreStatusKey}:${thirdCoreValue}` : ""}`;
+  };
 
   return (
     <div className="search-equipment">
@@ -114,7 +133,7 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
             className="equipment-card"
             onClick={() => handleSelectEquipment(equipment)}
           >
-            <p className="equipment-name">{equipment.name}</p>
+            <p className="equipment-name">{equipment.name}: 錬成 {equipment.reinforceLevel}: 特殊コア {createStringCoreEnhancement(equipment.core)}</p>
             <div className="equipment-status">
               <div className="equipment-status-item">
                 <p className="equipment-status-key">pow</p>

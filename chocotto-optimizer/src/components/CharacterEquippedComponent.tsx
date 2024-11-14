@@ -23,32 +23,6 @@ const CharacterEquippedComponent: React.FC<CharacterEquippedComponentProps> = ({
   setCharacterMainEquipment,
   setCharacterSubEquipment,
 }) => {
-  const [selectedEquipment, setSelectedEquipment] = useState<{
-    [key in Category]?: EquipmentInstance;
-  }>({});
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // モーダルの状態を管理
-
-  const handleSelectEquipment = (
-    category: Category,
-    equipment: EquipmentInstance
-  ) => {
-    setSelectedEquipment((prevState) => ({
-      ...prevState,
-      [category]: equipment,
-    }));
-    setCharacterMainEquipment({
-      ...selectedEquipment,
-      [category]: equipment,
-    });
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
 
   return (
     <div>
@@ -62,7 +36,63 @@ const CharacterEquippedComponent: React.FC<CharacterEquippedComponentProps> = ({
             equipmentInstances={equipmentInstances}
             characterEquipment={characterMainEquipment}
             setCharacterEquipment={setCharacterMainEquipment}
-            handleOpenModal={handleOpenModal} // モーダルを開く関数を渡す
+            equippedInstanceUUId={characterSubEquipment.武器?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="頭"
+            viewCategory="頭"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.頭?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="服"
+            viewCategory="服"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.服?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="首"
+            viewCategory="首"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.首?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="手"
+            viewCategory="手"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.手?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="盾"
+            viewCategory="盾"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.盾?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="背"
+            viewCategory="背"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.背?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="靴"
+            viewCategory="靴"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterMainEquipment}
+            setCharacterEquipment={setCharacterMainEquipment}
+            equippedInstanceUUId={characterSubEquipment.靴?.uuid}
           />
         </div>
         <div className="character-equipped-component-sub">
@@ -73,23 +103,66 @@ const CharacterEquippedComponent: React.FC<CharacterEquippedComponentProps> = ({
             equipmentInstances={equipmentInstances}
             characterEquipment={characterSubEquipment}
             setCharacterEquipment={setCharacterSubEquipment}
-            handleOpenModal={handleOpenModal} // モーダルを開く関数を渡す
+            equippedInstanceUUId={characterMainEquipment.武器?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="頭"
+            viewCategory="頭"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.頭?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="服"
+            viewCategory="服"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.服?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="首"
+            viewCategory="首"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.首?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="手"
+            viewCategory="手"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.手?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="盾"
+            viewCategory="盾"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.盾?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="背"
+            viewCategory="背"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.背?.uuid}
+          />
+          <CharacterEquippedComponentItem
+            category="靴"
+            viewCategory="靴"
+            equipmentInstances={equipmentInstances}
+            characterEquipment={characterSubEquipment}
+            setCharacterEquipment={setCharacterSubEquipment}
+            equippedInstanceUUId={characterMainEquipment.靴?.uuid}
           />
         </div>
       </div>
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <button onClick={handleCloseModal}>閉じる</button>
-            <SelectEquipmentComponent
-              equipmentInstances={equipmentInstances}
-              fixCategory="武器" // 例として固定カテゴリを渡す
-              setCharacterEquipment={setCharacterMainEquipment}
-              handleCloseSearchModal={handleCloseModal}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -99,10 +172,10 @@ interface CharacterEquippedComponentItemProps {
   viewCategory: string;
   equipmentInstances: EquipmentInstance[];
   characterEquipment: { [key in Category]?: EquipmentInstance };
+  equippedInstanceUUId: string | undefined;
   setCharacterEquipment: (equipment: {
     [key in Category]?: EquipmentInstance;
   }) => void;
-  handleOpenModal: () => void; // モーダルを開く関数を受け取る
 }
 
 const CharacterEquippedComponentItem: React.FC<
@@ -112,13 +185,21 @@ const CharacterEquippedComponentItem: React.FC<
   viewCategory,
   equipmentInstances,
   characterEquipment,
+  equippedInstanceUUId,
   setCharacterEquipment,
-  handleOpenModal,
 }) => {
-  const handleSelectEquipment = (equipmentInstances: EquipmentInstance[]) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  const handleSelectEquipment = (equipmentInstance: EquipmentInstance) => {
     setCharacterEquipment({
       ...characterEquipment,
-      [category]: null,
+      [category]: equipmentInstance,
     });
   };
   const handleDeleteEquipment = (category: Category) => {
@@ -128,22 +209,38 @@ const CharacterEquippedComponentItem: React.FC<
     });
   };
   return (
-    <div className="character-equipped-component-item">
-      <label>{viewCategory}</label>
-      <div
-        className="character-equipped-component-item-select"
-        onClick={handleOpenModal} // クリックでモーダルを開く
-      >
-        {characterEquipment[category]
-          ? characterEquipment[category]?.name
-          : "未装備"}
+    <>
+      <div className="character-equipped-component-item">
+        <label>{viewCategory}</label>
+        <div
+          className="character-equipped-component-item-select"
+          onClick={handleOpenModal} // クリックでモーダルを開く
+        >
+          {characterEquipment[category]
+            ? characterEquipment[category]?.name
+            : "未装備"}
+        </div>
+        <button onClick={() => handleDeleteEquipment(category)}>
+          <span role="img" aria-label="delete">
+            🗑️
+          </span>
+        </button>
       </div>
-      <button onClick={() => handleDeleteEquipment(category)}>
-        <span role="img" aria-label="delete">
-          🗑️
-        </span>
-      </button>
-    </div>
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <button onClick={handleCloseModal}>閉じる</button>
+            <SelectEquipmentComponent
+              equipmentInstances={equipmentInstances}
+              fixCategory={category}
+              setCharacterEquipment={handleSelectEquipment}
+              handleCloseSearchModal={handleCloseModal}
+              equippedInstanceUUId={equippedInstanceUUId}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
