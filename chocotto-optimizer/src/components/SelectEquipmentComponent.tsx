@@ -67,7 +67,7 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
     }
 
     setFilteredAndSortedEquipments(filteredEquipments);
-  }, [equipmentInstances, fixCategory, searchName, sortKey, sortOrder]);
+  }, [equipmentInstances, fixCategory, searchName, sortKey, sortOrder, equippedInstanceUUId]);
 
   useEffect(() => {
     searchEquipment();
