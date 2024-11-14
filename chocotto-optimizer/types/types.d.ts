@@ -79,6 +79,16 @@ export interface EquipmentSimple {
     core: Core;
 }
 
+/**
+ * キャラクター装備情報
+ */
+export interface Equipped {
+    [key in Category]?: EquipmentInstance
+}
+
+/**
+ * 基本ステータスを表す型
+ */
 export interface KisoStatus{
     pow: number;
     int: number;
@@ -112,4 +122,77 @@ export interface AvatarStatus extends KisoStatus {
     pet: number;
     mov: number;
     drn: number;
+}
+
+/**
+ * 計算後のステータスを表す型
+ */
+export interface TotalStatus extends KisoStatus {
+    hp: number;
+    sp: number;
+    atk: number;
+    def: number;
+    mat: number;
+    mdf: number;
+    hpr: number;
+    spr: number;
+    exp: number;
+    pet: number;
+    mov: number;
+    drn: number;
+}
+
+/**
+ * 装備の効果を表す型
+ */
+export interface EquippedEffect {
+    ability_id: string;
+    ability_type: string;
+    equipment_id: string;
+    source_status: string;
+    target_status: string;
+    effect: string;
+    text: string;
+}
+
+/**
+ * コンボ装備のデータを表す型
+ */
+export interface ComboEquipment {
+    combo_id: string;
+    part: string;
+    equipment_id: string;
+    count: string;
+    need: string;
+}
+
+/**
+ * コンボ装備のステータスを表す型
+ */
+export interface ComboStatus {
+    combo_id: string;
+    pow: number;
+    int: number;
+    spd: number;
+    vit: number;
+    luk: number;
+    atk: number;
+    def: number;
+    mat: number;
+    mdf: number;
+    hp: number;
+    sp: number;
+    hpr: number;
+    spr: number;
+    drn: number;
+    mov: number;
+    pet: number;
+    exp: number;
+    group_id: string;
+    text: string;
+}
+
+export interface ComboInfo {
+    comboEquipment: ComboEquipment;
+    comboStatus: ComboStatus;
 }

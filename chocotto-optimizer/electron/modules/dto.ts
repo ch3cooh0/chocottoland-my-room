@@ -1,5 +1,6 @@
-import { EquipmentSimple, EquipmentInstance, Equipment } from '../../types/types';
+import { EquipmentSimple, EquipmentInstance, Equipment, Equipped, ComboStatus, TotalStatus, CharacterStatus, AvatarStatus } from '../../types/types';
 import { v4 as uuidv4 } from 'uuid';
+import { ZeroStatus } from './utiles';
 
 export const EquipmentDTO={
     /**
@@ -79,6 +80,45 @@ export const EquipmentDTO={
                 2: {},
                 3: {}
             }
+        };
+    },
+    convertEquippedToEquipmentInstances: (equipped: Equipped): EquipmentInstance[] => {
+        return Object.values(equipped).map(equipment => equipment);
+    },
+    convertComboStatusToTotalStatus: (comboStatus: ComboStatus): TotalStatus => {
+        return {
+            ...ZeroStatus.zeroTotalStatus(),
+            ...{
+                pow: comboStatus.pow,
+                int: comboStatus.int,
+                vit: comboStatus.vit,
+                spd: comboStatus.spd,
+                luk: comboStatus.luk,
+                hp: comboStatus.hp,
+                sp: comboStatus.sp,
+                atk: comboStatus.atk,
+                def: comboStatus.def,
+                mat: comboStatus.mat,
+                mdf: comboStatus.mdf,
+                hpr: comboStatus.hpr,
+                spr: comboStatus.spr,
+                exp: comboStatus.exp,
+                pet: comboStatus.pet,
+                mov: comboStatus.mov,
+                drn: comboStatus.drn,
+            }
+        };
+    },
+    convertCharacterStatusToTotalStatus: (characterStatus: CharacterStatus): TotalStatus => {
+        return {
+            ...ZeroStatus.zeroTotalStatus(),
+            ...characterStatus
+        };
+    },
+    convertAvatarStatusToTotalStatus: (avatarStatus: AvatarStatus): TotalStatus => {
+        return {
+            ...ZeroStatus.zeroTotalStatus(),
+            ...avatarStatus
         };
     }
 }
