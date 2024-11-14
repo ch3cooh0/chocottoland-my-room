@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import './App.css'
-import { AvatarStatus, CharacterStatus, EquipmentInstance, EquipmentSimple } from '../types/types';
+import { AvatarStatus, Category, CharacterStatus, EquipmentInstance, EquipmentSimple } from '../types/types';
 import WarehouseComponent from './components/WarehouseComponent';
 import StatusViewComponent from './components/StatusViewComponent';
 import { EquipmentDTO } from '../electron/modules/dto';
+import CharacterEquippedComponent from './components/CharacterEquippedComponent';
 
 function App() {
   /**
@@ -55,12 +56,18 @@ function App() {
     vit: 0,
     spd: 0,
     luk: 0,
-  }); 
+  });
+  /**
+   * キャラクター装備
+   */
+  const [characterMainEquipment, setCharacterMainEquipment] = useState<{ [key in Category]?: EquipmentInstance }>({});
+  const [characterSubEquipment, setCharacterSubEquipment] = useState<{ [key in Category]?: EquipmentInstance }>({});
   return (
-    <>
+    <>  
       <h1>Chocottoland Optimizer</h1>
       <WarehouseComponent equipmentInstances={equipmentInstances} loadWarehouse={loadWarehouse} writeWarehouse={writeWarehouse} setEquipmentInstances={setEquipmentInstances} />
       <StatusViewComponent characterStatus={characterStatus} avatarStatus={avatarStatus} setCharacterStatus={setCharacterStatus} setAvatarStatus={setAvatarStatus} />
+      <CharacterEquippedComponent equipmentInstances={equipmentInstances} characterMainEquipment={characterMainEquipment} characterSubEquipment={characterSubEquipment} setCharacterMainEquipment={setCharacterMainEquipment} setCharacterSubEquipment={setCharacterSubEquipment} />
     </>
   )
 }
