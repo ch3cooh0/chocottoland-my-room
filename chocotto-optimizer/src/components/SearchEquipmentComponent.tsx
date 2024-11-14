@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { EquipmentInstance, Category, Equipment } from "../../types/types";
 
 const categories: Category[] = [
@@ -59,7 +59,7 @@ const SearchEquipmentComponent: React.FC<SearchEquipmentComponentProps> = ({
     handleCloseSearchModal();
   };
 
-  const searchEquipment = async () => {
+  const searchEquipment = useCallback(async () => {
     const equipments = await window.ipcRenderer.invoke(
       "searchEquipment",
       selectedCategory,
@@ -68,11 +68,11 @@ const SearchEquipmentComponent: React.FC<SearchEquipmentComponentProps> = ({
       sortOrder
     );
     setFilteredAndSortedEquipments(equipments);
-  };
+  }, [selectedCategory, searchName, sortKey, sortOrder]);
 
   useEffect(() => {
     searchEquipment();
-  }, [selectedCategory, searchName, sortKey, sortOrder]);
+  }, [selectedCategory, searchName, sortKey, sortOrder, searchEquipment]);
 
   return (
     <div className="search-equipment">

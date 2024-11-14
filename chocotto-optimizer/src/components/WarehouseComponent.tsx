@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { Category, EquipmentInstance } from "../../types/types";
+import {
+  Category,
+  Core,
+  EquipmentInstance,
+  StatusKey,
+} from "../../types/types";
 import SearchEquipmentComponent from "./SearchEquipmentComponent";
-
+import EquipmentDetailComponent from "./EquipmentDetailComponent";
 const categories: Category[] = [
   "武器",
   "頭",
@@ -28,14 +33,41 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>("武器");
   const [savePath, setSavePath] = useState<string>("");
+  const [selectedEquipment, setSelectedEquipment] =
+    useState<EquipmentInstance | null>(null);
   // モーダル管理
   const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const handleOpenSearchModal = () => {
     setIsSearchModalOpen(true);
   };
 
   const handleCloseSearchModal = () => {
     setIsSearchModalOpen(false);
+  };
+
+  const handleOpenDetailModal = (equipment: EquipmentInstance) => {
+    setSelectedEquipment(equipment);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+  };
+
+  const handleApplyCore = (equipmentInstance: EquipmentInstance) => {
+    setEquipmentInstances(
+      equipmentInstances.map((equipment) =>
+        equipment.id === equipmentInstance.id
+          ? {
+              ...equipment,
+              core: equipmentInstance.core,
+              reinforceLevel: equipmentInstance.reinforceLevel,
+            }
+          : equipment
+      )
+    );
+    setIsDetailModalOpen(false);
   };
 
   const handleCategoryChange = (category: Category) => {
@@ -74,7 +106,24 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
    * 装備削除
    */
   const handleDeleteButtonClick = (equipment: EquipmentInstance) => {
-    setEquipmentInstances(equipmentInstances.filter((instance) => instance.id !== equipment.id));
+    setEquipmentInstances(
+      equipmentInstances.filter((instance) => instance.id !== equipment.id)
+    );
+  };
+
+  const createCoreEnhancement = (core: Core): string => {
+    const firstCoreStatusKey = Object.keys(core[1])[0];
+    const firstCoreValue = core[1][firstCoreStatusKey as unknown as StatusKey];
+    const secondCoreStatusKey = Object.keys(core[2])[0];
+    const secondCoreValue =
+      core[2][secondCoreStatusKey as unknown as StatusKey];
+    const thirdCoreStatusKey = Object.keys(core[3])[0];
+    const thirdCoreValue = core[3][thirdCoreStatusKey as unknown as StatusKey];
+    return `${
+      firstCoreStatusKey ? `${firstCoreStatusKey}:${firstCoreValue}` : ""
+    } ${
+      secondCoreStatusKey ? `${secondCoreStatusKey}:${secondCoreValue}` : ""
+    } ${thirdCoreStatusKey ? `${thirdCoreStatusKey}:${thirdCoreValue}` : ""}`;
   };
 
   return (
@@ -103,7 +152,13 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((equipment) => (
             <div key={equipment.id} className="warehouse-card">
-              <p>{equipment.name}</p>
+              <p>
+                {equipment.name}:錬成 {equipment.reinforceLevel} 特殊コア{" "}
+                {createCoreEnhancement(equipment.core)}
+              </p>
+              <button onClick={() => handleOpenDetailModal(equipment)}>
+                詳細
+              </button>
               <button onClick={() => handleDeleteButtonClick(equipment)}>
                 削除
               </button>
@@ -123,6 +178,17 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
               setEquipmentInstances={setEquipmentInstances}
               fixCategory={selectedCategory}
               handleCloseSearchModal={handleCloseSearchModal}
+            />
+          </div>
+        </div>
+      )}
+      {isDetailModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <EquipmentDetailComponent
+              equipmentInstance={selectedEquipment}
+              handleCloseDetailModal={handleCloseDetailModal}
+              handleApplyCore={handleApplyCore}
             />
           </div>
         </div>

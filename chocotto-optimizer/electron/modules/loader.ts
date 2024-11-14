@@ -1,12 +1,13 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import { Equipment, Category, EquipmentSimple } from '../../types/types';
+import { Equipment, Category, EquipmentSimple, CharacterStatus, AvatarStatus } from '../../types/types';
 
 export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
     return new Promise((resolve, reject) => {
         const equipments: Equipment[] = [];
         fs.createReadStream(filePath)
             .pipe(csv())
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .on('data', (row: any) => {
                 const equipment: Equipment = {
                     id: row.id,
@@ -37,6 +38,7 @@ export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
             .on('end', () => {
                 resolve(equipments);
             })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .on('error', (error: any) => {
                 reject(error);
             });
@@ -44,6 +46,18 @@ export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
 }
 
 export function loadEquipmentSimpleFromJSON(filePath: string): Promise<EquipmentSimple[]> {
+    const json = fs.readFileSync(filePath, 'utf8');
+    const data = JSON.parse(json);
+    return data;
+}
+
+export function loadCharacterStatusFromJSON(filePath: string): Promise<CharacterStatus> {
+    const json = fs.readFileSync(filePath, 'utf8');
+    const data = JSON.parse(json);
+    return data;
+}
+
+export function loadAvatarStatusFromJSON(filePath: string): Promise<AvatarStatus> {
     const json = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(json);
     return data;

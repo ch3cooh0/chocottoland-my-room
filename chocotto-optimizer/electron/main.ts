@@ -1,8 +1,8 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-import { loadEquipmentFromCSV, loadEquipmentSimpleFromJSON } from './modules/loader'
-import { writeEquipmentSimpleToJSON } from './modules/writer'
+import { loadAvatarStatusFromJSON, loadCharacterStatusFromJSON, loadEquipmentFromCSV, loadEquipmentSimpleFromJSON } from './modules/loader'
+import { writeAvatarStatusToJSON, writeCharacterStatusToJSON, writeEquipmentSimpleToJSON } from './modules/writer'
 import { EquipmentDTO } from './modules/dto'
 import { StatusKey } from '../types/types'
 
@@ -20,7 +20,7 @@ let win: BrowserWindow | null
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC, 'choco_cornet_icon_64x64.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
@@ -55,6 +55,9 @@ app.on('activate', () => {
  * ハンドル定義
  */
 
+/**
+ * 装備マスター読込
+ */
 ipcMain.handle('loadEquipmentFromCSV', async (event, path) => {
   try {
     const data = await loadEquipmentFromCSV(path)
@@ -65,6 +68,10 @@ ipcMain.handle('loadEquipmentFromCSV', async (event, path) => {
     throw error
   }
 })
+
+/**
+ * 倉庫データ読込
+ */
 ipcMain.handle('loadEquipmentSimpleFromJSON', async (event, path) => {
   try {
     const data = await loadEquipmentSimpleFromJSON(path)
@@ -75,6 +82,10 @@ ipcMain.handle('loadEquipmentSimpleFromJSON', async (event, path) => {
     throw error
   }
 })
+
+/**
+ * 倉庫データ保存
+ */
 ipcMain.handle('writeEquipmentSimpleToJSON', async (event, path, data) => {
   try {
     await writeEquipmentSimpleToJSON(path, data)
@@ -85,6 +96,37 @@ ipcMain.handle('writeEquipmentSimpleToJSON', async (event, path, data) => {
   }
 })
 
+/**
+ * キャラクターステータス読込
+ */
+ipcMain.handle('loadCharacterStatusFromJSON', async (event, path) => {
+  return loadCharacterStatusFromJSON(path);
+});
+
+/**
+ * キャラクターステータス保存
+ */
+ipcMain.handle('writeCharacterStatusToJSON', async (event, path, data) => {
+  return writeCharacterStatusToJSON(path, data);
+});
+
+/**
+ * アバターステータス読込
+ */
+ipcMain.handle('loadAvatarStatusFromJSON', async (event, path) => {
+  return loadAvatarStatusFromJSON(path);
+});
+
+/**
+ * アバターステータス保存
+ */
+ipcMain.handle('writeAvatarStatusToJSON', async (event, path, data) => {
+  return writeAvatarStatusToJSON(path, data);
+});
+
+/**
+ * ファイル保存ダイアログ
+ */
 ipcMain.handle('show-save-dialog', async (event, defaultFileName) => {
   if (!win) {
     console.info(event)
@@ -99,6 +141,9 @@ ipcMain.handle('show-save-dialog', async (event, defaultFileName) => {
   return result.filePath;
 });
 
+/**
+ * ファイル読込ダイアログ
+ */
 ipcMain.handle('show-open-dialog', async (event) => {
   if (!win) {
     console.info(event)
@@ -113,6 +158,9 @@ ipcMain.handle('show-open-dialog', async (event) => {
   return result.filePaths;
 });
 
+/**
+ * 倉庫保存データ→装備インスタンス変換
+ */
 ipcMain.handle('convertEquipmentSimplesToEquipmentInstances', async (event, equipmentSimples) => {
   console.debug(event);
   const equipmentMaster = await loadEquipmentFromCSV('./data/equipments.csv');
@@ -120,16 +168,25 @@ ipcMain.handle('convertEquipmentSimplesToEquipmentInstances', async (event, equi
   return equipmentInstances;
 });
 
+/**
+ * 装備インスタンス→倉庫保存データ変換
+ */
 ipcMain.handle('convertEquipmentInstanceToEquipmentSimple', async (event, equipmentInstance) => {
   console.debug(event);
   return EquipmentDTO.convertEquipmentInstanceToEquipmentSimple(equipmentInstance);
 });
 
+/**
+ * 装備→装備インスタンス変換
+ */
 ipcMain.handle('convertEquipmentToEquipmentInstance', async (event, equipment) => {
   console.debug(event);
   return EquipmentDTO.convertEquipmentToEquipmentInstance(equipment);
 });
 
+/**
+ * 装備マスターから装備検索
+ */
 ipcMain.handle('searchEquipment', async (event, fixCategory, searchName, sortKey, sortOrder) => {
   console.debug(event);
   const equipmentMaster = await loadEquipmentFromCSV('./data/equipments.csv');

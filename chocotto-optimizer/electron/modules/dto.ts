@@ -74,7 +74,11 @@ export const EquipmentDTO={
             ...equipment,
             uuid: uuidv4(),
             reinforceLevel: 0,
-            core: {}
+            core: {
+                1: {},
+                2: {},
+                3: {}
+            }
         };
     }
 }

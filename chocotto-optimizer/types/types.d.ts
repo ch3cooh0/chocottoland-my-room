@@ -44,6 +44,18 @@ export interface Equipment {
 }
 
 /**
+ * 装備の特殊コアの強化レベルを表す型
+ */
+export type CoreNo = 1 | 2 | 3;
+
+/**
+ * 装備の特殊コアを表す型
+ */
+export type Core = {
+    [key in CoreNo]: Partial<{ [key in StatusKey]: number }>;
+}
+
+/**
  * 装備のインスタンスを表す型(装備の組み合わせ探索用)
  */
 export interface EquipmentInstance extends Equipment {
@@ -52,7 +64,7 @@ export interface EquipmentInstance extends Equipment {
     // 強化レベル
     reinforceLevel: number;
     // 特殊コア
-    core: Partial<{ [key in StatusKey]: number }>;
+    core: Core;
 }
 
 /**
@@ -64,5 +76,40 @@ export interface EquipmentSimple {
     // 強化レベル
     reinforceLevel: number;
     // 特殊コア
-    core: Partial<{ [key in StatusKey]: number }>;
+    core: Core;
+}
+
+export interface KisoStatus{
+    pow: number;
+    int: number;
+    vit: number;
+    spd: number;
+    luk: number;
+}
+
+/**
+ * キャラクターステータスを表す型
+ */
+export interface CharacterStatus extends KisoStatus {
+    lv: number;
+    hp: number;
+    sp: number;
+}
+
+/**
+ * アバターのステータスを表す型
+ */
+export interface AvatarStatus extends KisoStatus {
+    hp: number;
+    sp: number;
+    atk: number;
+    def: number;
+    mat: number;
+    mdf: number;
+    hpr: number;
+    spr: number;
+    exp: number;
+    pet: number;
+    mov: number;
+    drn: number;
 }

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 import { Scale, TestTags, createTitle } from './tags';
 import { writeEquipmentSimpleToJSON } from '../electron/modules/writer';
 import { EquipmentSimple } from '../types/types';
@@ -11,8 +11,9 @@ describe('writer:writeEquipmentSimpleToJSON', () => {
                 name: "銅の剣",
                 reinforceLevel: 11,
                 core: {
-                    pow: 1,
-                    int: 2,
+                    1: { pow: 1 },
+                    2: { int: 2 },
+                    3: { luk: 3 },
                 }
             }
         ];
@@ -25,8 +26,9 @@ describe('writer:writeEquipmentSimpleToJSON', () => {
                 name: "銅の剣",
                 reinforceLevel: 11,
                 core: {
-                    pow: 1,
-                    int: 2,
+                    1: { pow: 1 },
+                    2: { int: 2 },
+                    3: { luk: 3 },
                 }
             },
             {
@@ -34,8 +36,9 @@ describe('writer:writeEquipmentSimpleToJSON', () => {
                 name: "銅の盾",
                 reinforceLevel: 0,
                 core: {
-                    pow: 1,
-                    int: 2,
+                    1: { pow: 1 },
+                    2: { int: 2 },
+                    3: { },
                 }
             }
         ];
