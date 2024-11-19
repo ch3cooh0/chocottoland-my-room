@@ -18,6 +18,7 @@ import {
   Equipped,
   CharacterStatus,
   AvatarStatus,
+  UserFileExtension,
 } from "../types/types";
 import {
   calcEquippedStatus,
@@ -26,6 +27,7 @@ import {
   coreEffectUtils,
   equippedEffectUtils,
   loadCache,
+  calcViewStatus,
 } from "./modules/statusCalculation";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -151,7 +153,7 @@ ipcMain.handle("writeAvatarStatusToJSON", async (event, path, data) => {
 /**
  * ファイル保存ダイアログ
  */
-ipcMain.handle("show-save-dialog", async (event, defaultFileName) => {
+ipcMain.handle("show-save-dialog", async (event, defaultFileName, ext: UserFileExtension) => {
   if (!win) {
     throw new Error("BrowserWindow is not available");
   }
@@ -160,8 +162,7 @@ ipcMain.handle("show-save-dialog", async (event, defaultFileName) => {
     buttonLabel: "保存",
     defaultPath: defaultFileName,
     filters: [
-      { name: "Text Files", extensions: ["json"] },
-      { name: "All Files", extensions: ["*"] },
+      { name: "Text Files", extensions: [ext] },
     ],
   });
   return result.filePath;
@@ -170,7 +171,7 @@ ipcMain.handle("show-save-dialog", async (event, defaultFileName) => {
 /**
  * ファイル読込ダイアログ
  */
-ipcMain.handle("show-open-dialog", async (event) => {
+ipcMain.handle("show-open-dialog", async (event,ext: UserFileExtension) => {
   if (!win) {
     throw new Error("BrowserWindow is not available");
   }
@@ -178,7 +179,7 @@ ipcMain.handle("show-open-dialog", async (event) => {
     title: "ファイルを開く",
     buttonLabel: "開く",
     properties: ["openFile"],
-    filters: [{ name: "Text Files", extensions: ["json"] }],
+    filters: [{ name: "Text Files", extensions: [ext] }],
   });
   return result.filePaths;
 });
@@ -308,12 +309,7 @@ ipcMain.handle(
       // セット効果
       comboStatus
     );
-    // console.log('characterStatus', characterStatus);
-    // console.log('avatarStatus', avatarStatus);
-    // console.log('equippedStatus', equippedStatus);
-    // console.log('comboStatus', comboStatus);
-    // console.log('totalStatus', totalStatus);
-    return totalStatus;
+    return calcViewStatus.applyExtendedStatus(totalStatus);
   }
 );
 

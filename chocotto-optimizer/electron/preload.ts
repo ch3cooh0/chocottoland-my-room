@@ -8,6 +8,7 @@ import {
   EquipmentSimple,
   Equipped,
   StatusKey,
+  UserFileExtension,
 } from "../types/types";
 
 // --------- Expose some API to the Renderer process ---------
@@ -39,9 +40,9 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     ipcRenderer.invoke("loadEquipmentSimpleFromJSON", path),
   writeEquipmentSimpleToJSON: (path: string, equipments: EquipmentSimple[]) =>
     ipcRenderer.invoke("writeEquipmentSimpleToJSON", path, equipments),
-  showSaveDialog: (defaultFileName: string) =>
-    ipcRenderer.invoke("show-save-dialog", defaultFileName),
-  showOpenDialog: () => ipcRenderer.invoke("show-open-dialog"),
+  showSaveDialog: (defaultFileName: string, ext: UserFileExtension) =>
+    ipcRenderer.invoke("show-save-dialog", defaultFileName, ext),
+  showOpenDialog: (ext: UserFileExtension) => ipcRenderer.invoke("show-open-dialog", ext),
   convertEquipmentSimplesToEquipmentInstances: (
     equipmentSimples: EquipmentSimple[]
   ) =>

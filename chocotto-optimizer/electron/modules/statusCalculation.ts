@@ -94,6 +94,7 @@ export const calcTotalStatus = {
       ZeroStatus.zeroTotalStatus()
     );
   },
+
 };
 
 export const calcEquippedStatus = {
@@ -180,68 +181,66 @@ export const comboEffectUtils = {
    * @returns
    */
   getComboInfo: (equippements: EquipmentInstance[]): ComboInfo[] => {
+    const comboIdMap = comboEffectUtils.getComboIdMap(equippements);
+    // セット効果発動候補
+    const combos = Object.entries(comboIdMap).filter(([comboId, comboEquipments]) => comboEffectUtils.validateCombo(comboEquipments));
+    const comboInfos = Object.values(combos).map((combo) => {
+      const status = cache.comboStatuses.find(
+        (status) => status.combo_id === combo[0]
+      );
+      if (status) {
+        return { comboEquipment: combo[1], comboStatus: status };
+      }
+      return null;
+    }).filter((info) => info !== null) as ComboInfo[]; 
+
+    return comboInfos;
+  },
+  getComboIdMap: (equippements: EquipmentInstance[]): { [key: string]: ComboEquipment[] } => {
     const ids: string[] = equippements.map((equipment) => equipment.id);
     // 装備に関連するセット効果一覧
     const relatedComboEquipments = cache.comboEquipments.filter((combo) =>
       ids.includes(combo.equipment_id)
     );
-    // セット効果発動候補
-    const combos: ComboEquipment[] = relatedComboEquipments.filter((combo) => comboEffectUtils.validateCombo(combo, ids));
-    const comboInfos = combos.map((combo) => {
-        const status = cache.comboStatuses.find(
-          (status) => status.combo_id === combo.combo_id
-        );
-        if (status) {
-          return { comboEquipment: combo, comboStatus: status };
-        }
-        return null;
-      })
-      .filter((info) => info !== null);
-
-    const groupedComboInfos = comboInfos.reduce((acc: { [key: string]: ComboInfo }, info: ComboInfo) => {
-      const groupId = info.comboStatus.group_id;
-      if (!acc[groupId] || acc[groupId].comboEquipment.count < info.comboEquipment.count) {
-        acc[groupId] = info;
-      }
+    const comboIdMap = relatedComboEquipments.reduce((acc: { [key: string]: ComboEquipment[] }, combo) => {
+      acc[combo.combo_id] = [...(acc[combo.combo_id] || []), combo];
       return acc;
     }, {});
-
-    return Object.values(groupedComboInfos);
+    return comboIdMap;
   },
   /**
    * セット効果が有効か判定する
-   * @param relatedComboEquipment
-   * @param equipmentIds
+   * @param comboEquipments 同一のセット効果Idのリスト
    * @returns
    */
   validateCombo: (
-    relatedComboEquipment: ComboEquipment,
-    equipmentIds: string[]
+    comboEquipments: ComboEquipment[]
   ): boolean => {
+    
     // セット効果IDに紐づくセット装備情報を取得
-    const comboEquipments = cache.comboEquipments.filter(
-      (combo) => relatedComboEquipment.combo_id === combo.combo_id
+    const masterComboEquipments = cache.comboEquipments.filter(
+      (combo) => comboEquipments.some((comboEquipment) => comboEquipment.combo_id === combo.combo_id)
     );
-    if (comboEquipments.length === 0) {
+    // console.log("masterComboEquipments", masterComboEquipments);
+    if (masterComboEquipments.length === 0) {
       return false;
     }
     // 発動に必須の装備Idを取得
-    const needEquipmentIds = comboEquipments
+    const needEquipmentIds = masterComboEquipments
       .filter((combo) => combo.need === "○")
       .map((combo) => combo.equipment_id);
     // 発動に必要な装備数
-    const needEquipmentCount = Number(comboEquipments[0].count);
+    const needEquipmentCount = Number(masterComboEquipments[0].count);
     // セット効果に該当する装備の数
-    const comboEquipmentCount = comboEquipments.filter((combo) =>
-      equipmentIds.includes(combo.equipment_id)
-    ).length;
+    const comboEquipmentCount = comboEquipments.length;
+  
     if (needEquipmentIds.length === 0) {
       // 必須装備なしの場合
       return comboEquipmentCount >= needEquipmentCount;
     }
     // 必須装備がある場合
     return (
-      needEquipmentIds.every((id) => equipmentIds.includes(id)) &&
+      needEquipmentIds.length === comboEquipments.filter((combo) => combo.need === "○").length &&
       comboEquipmentCount >= needEquipmentCount
     );
   },
@@ -563,5 +562,25 @@ export const coreEffectUtils = {
       });
     });
     return tolalStatus;
+  }
+}
+
+/**
+ * 画面表示に関するステータス計算
+ */
+export const calcViewStatus = {
+  /**
+   * 画面表示に基礎ステータスから拡張ステータスを計算する
+   * @param totalStatus 
+   * @returns 
+   */
+  applyExtendedStatus: (totalStatus: TotalStatus): TotalStatus => {
+    return {
+      ...totalStatus,
+      atk: totalStatus.atk + totalStatus.pow * 3,
+      def: totalStatus.def + totalStatus.vit * 2,
+      mat: totalStatus.mat + totalStatus.int * 2,
+      mdf: totalStatus.mdf + totalStatus.int * 15,
+    }
   }
 }

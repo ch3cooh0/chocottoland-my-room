@@ -78,7 +78,10 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
    * ファイル読込
    */
   const handleFileSelect = async () => {
-    const filePaths = await window.ipcRenderer.invoke("show-open-dialog");
+    const filePaths = await window.ipcRenderer.invoke(
+      "show-open-dialog",
+      "wherehouse.json"
+    );
     if (filePaths.length > 0) {
       const filePath = filePaths[0];
       loadWarehouse(filePath);
@@ -92,7 +95,8 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
   const handleSaveButtonClick = async () => {
     const filePath = await window.ipcRenderer.invoke(
       "show-save-dialog",
-      savePath
+      savePath,
+      "wherehouse.json"
     );
     if (filePath) {
       setSavePath(filePath);
