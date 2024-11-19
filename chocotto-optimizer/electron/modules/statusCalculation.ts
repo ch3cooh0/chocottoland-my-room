@@ -175,6 +175,16 @@ export const calcEquippedStatus = {
 };
 
 export const comboEffectUtils = {
+
+  /**
+   * EquipmentInstance[]から有効なセット効果（コンボ効果）を計算する。
+   * @param equippements
+   * @returns
+   */
+  calcComboEffectFromEquipped: (equippements: EquipmentInstance[]): TotalStatus => {
+    const comboInfos = comboEffectUtils.getComboInfo(equippements);
+    return comboEffectUtils.calcComboEffect(comboInfos);
+  },
   /**
    * EquipmentInstance[]から有効なセット効果（コンボ効果）を取得する。
    * @param equippements
@@ -221,7 +231,6 @@ export const comboEffectUtils = {
     const masterComboEquipments = cache.comboEquipments.filter(
       (combo) => comboEquipments.some((comboEquipment) => comboEquipment.combo_id === combo.combo_id)
     );
-    // console.log("masterComboEquipments", masterComboEquipments);
     if (masterComboEquipments.length === 0) {
       return false;
     }
@@ -534,7 +543,6 @@ export const equippedEffectUtils = {
   calcEffectedStatus: (effect: string, src: number): number => {
     const operator = effect.charAt(0);
     const value = Number(effect.slice(1));
-
     switch (operator) {
       case "+":
         return value;
@@ -555,11 +563,13 @@ export const coreEffectUtils = {
     const instances: EquipmentInstance[] = EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment);
     let tolalStatus = ZeroStatus.zeroTotalStatus();
     instances.map((instance) => {
-      Object.values(instance.core).forEach((core) => {
-        Object.entries(core).forEach(([key, value]) => {
-          tolalStatus[key as keyof TotalStatus] += value;
+      if (instance.core) { 
+        Object.values(instance.core).forEach((core) => {
+          Object.entries(core).forEach(([key, value]) => {
+            tolalStatus[key as keyof TotalStatus] += value;
+          });
         });
-      });
+      }
     });
     return tolalStatus;
   }
