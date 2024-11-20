@@ -1,11 +1,9 @@
 import { 服, 盾, 背, 靴, 頭, 首, 手, 武器 } from "./testConst";
 import { generateSingleCombinations, calculateStats } from "../electron/modules/exploration";
-import { AvatarStatus, CharacterStatus, Equipment, EquipmentInstance } from "../types/types";
+import { AvatarStatus, CharacterStatus, EquipmentInstance } from "../types/types";
 import { it, describe, expect, beforeAll } from "vitest";
 import { ZeroStatus } from "../electron/modules/utiles";
 import { loadCache } from "../electron/modules/statusCalculation";
-import { loadEquipmentSimpleFromJSON } from "../electron/modules/loader";
-import { EquipmentDTO } from "../electron/modules/dto";
 
 beforeAll(async () => {
     await loadCache();
@@ -124,6 +122,6 @@ describe("generateCombinations", async () => {
         const characterStatus: CharacterStatus = ZeroStatus.zeroCharacterStatus()
         const avatarStatus: AvatarStatus = ZeroStatus.zeroAvatarStatus()
         const result = generateSingleCombinations(equipmentList, characterStatus, avatarStatus,"pow", 1);
-        console.log(equipmentList);
+        console.log(result);
     });
 });
