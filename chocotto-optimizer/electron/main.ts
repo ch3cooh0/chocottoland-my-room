@@ -128,49 +128,49 @@ ipcMain.handle("writeEquipmentSimpleToJSON", async (event, path, data) => {
 /**
  * キャラクターステータス読込
  */
-ipcMain.handle("loadCharacterStatusFromJSON", async (event, path) => {
+ipcMain.handle("loadCharacterStatusFromJSON", async (_event, path) => {
   return loadCharacterStatusFromJSON(path);
 });
 
 /**
  * キャラクターステータス保存
  */
-ipcMain.handle("writeCharacterStatusToJSON", async (event, path, data) => {
+ipcMain.handle("writeCharacterStatusToJSON", async (_event, path, data) => {
   return writeCharacterStatusToJSON(path, data);
 });
 
 /**
  * アバターステータス読込
  */
-ipcMain.handle("loadAvatarStatusFromJSON", async (event, path) => {
+ipcMain.handle("loadAvatarStatusFromJSON", async (_event, path) => {
   return loadAvatarStatusFromJSON(path);
 });
 
 /**
  * アバターステータス保存
  */
-ipcMain.handle("writeAvatarStatusToJSON", async (event, path, data) => {
+ipcMain.handle("writeAvatarStatusToJSON", async (_event, path, data) => {
   return writeAvatarStatusToJSON(path, data);
 });
 
 /**
  * マネキンデータ読込
  */
-ipcMain.handle("loadMannequinFromJSON", async (event, path) => {
+ipcMain.handle("loadMannequinFromJSON", async (_event, path) => {
   return loadMannequinFromJSON(path);
 });
 
 /**
  * マネキンデータ保存
  */
-ipcMain.handle("writeMannequinToJSON", async (event, path, data) => {
+ipcMain.handle("writeMannequinToJSON", async (_event, path, data) => {
   return writeMannequinToJSON(path, data);
 });
 
 /**
  * ファイル保存ダイアログ
  */
-ipcMain.handle("show-save-dialog", async (event, defaultFileName, ext: UserFileExtension) => {
+ipcMain.handle("show-save-dialog", async (_event, defaultFileName, ext: UserFileExtension) => {
   if (!win) {
     throw new Error("BrowserWindow is not available");
   }
@@ -188,7 +188,7 @@ ipcMain.handle("show-save-dialog", async (event, defaultFileName, ext: UserFileE
 /**
  * ファイル読込ダイアログ
  */
-ipcMain.handle("show-open-dialog", async (event,ext: UserFileExtension) => {
+ipcMain.handle("show-open-dialog", async (_event,ext: UserFileExtension) => {
   if (!win) {
     throw new Error("BrowserWindow is not available");
   }
@@ -206,7 +206,7 @@ ipcMain.handle("show-open-dialog", async (event,ext: UserFileExtension) => {
  */
 ipcMain.handle(
   "convertEquipmentSimplesToEquipmentInstances",
-  async (event, equipmentSimples) => {
+  async (_event, equipmentSimples) => {
     const equipmentMaster = await loadEquipmentFromCSV("./data/equipments.csv");
     const equipmentInstances =
       EquipmentDTO.convertEquipmentSimplesToEquipmentInstances(
@@ -222,7 +222,7 @@ ipcMain.handle(
  */
 ipcMain.handle(
   "convertEquipmentInstanceToEquipmentSimple",
-  async (event, equipmentInstance) => {
+  async (_event, equipmentInstance) => {
     return EquipmentDTO.convertEquipmentInstanceToEquipmentSimple(
       equipmentInstance
     );
@@ -234,7 +234,7 @@ ipcMain.handle(
  */
 ipcMain.handle(
   "convertEquipmentToEquipmentInstance",
-  async (event, equipment) => {
+  async (_event, equipment) => {
     return EquipmentDTO.convertEquipmentToEquipmentInstance(equipment);
   }
 );
@@ -244,7 +244,7 @@ ipcMain.handle(
  */
 ipcMain.handle(
   "searchEquipment",
-  async (event, fixCategory, searchName, sortKey, sortOrder) => {
+  async (_event, fixCategory, searchName, sortKey, sortOrder) => {
     const equipmentMaster = await loadEquipmentFromCSV("./data/equipments.csv");
     const searchedEquipments = equipmentMaster
       .filter((equipment) => {
@@ -270,7 +270,7 @@ ipcMain.handle(
 ipcMain.handle(
   "calcTotalStatus",
   async (
-    event,
+    _event,
     characterMainEquipment: Equipped,
     characterSubEquipment: Equipped,
     characterStatus: CharacterStatus,
@@ -344,7 +344,7 @@ ipcMain.handle(
 /**
  * 探索結果生成
  */
-ipcMain.handle("generateSingleCombinations", async (event, equipmentList, characterStatus, avatarStatus, key, N) => {
+ipcMain.handle("generateSingleCombinations", async (_event, equipmentList, characterStatus, avatarStatus, key, N) => {
   return generateSingleCombinations(equipmentList, characterStatus, avatarStatus, key, N);
 });
 

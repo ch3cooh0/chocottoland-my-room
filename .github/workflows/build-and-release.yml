@@ -2,8 +2,8 @@ name: Build and Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -18,22 +18,26 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Cache node_modules
+    - name: Cache pnpm store
       uses: actions/cache@v3
       with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.os }}-pnpm-
 
     - name: Install dependencies
-      run: npm install
+      shell: pwsh
+      run: |
+        npm install -g pnpm
+        cd chocotto-optimizer
+        pnpm install
 
     - name: Build project
-      run: npm run build
-
-    - name: Package Electron app
-      run: npm run electron-builder
+      shell: pwsh
+      run: |
+        cd chocotto-optimizer
+        pnpm run build
 
     - name: Create Release
       id: create_release
@@ -50,8 +54,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: path/to/your/built/electron/app
-        asset_name: your-app-name.zip
+        asset_path: ./chocotto-optimizer/release
+        asset_name: chocotto-optimizer-win32-ia32.zip
         asset_content_type: application/zip
