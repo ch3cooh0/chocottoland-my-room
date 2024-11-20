@@ -1,4 +1,4 @@
-import { EquipmentSimple, EquipmentInstance, Equipment, Equipped, ComboStatus, TotalStatus, CharacterStatus, AvatarStatus } from '../../types/types';
+import { EquipmentSimple, EquipmentInstance, Equipment, Equipped, ComboStatus, TotalStatus, CharacterStatus, AvatarStatus, Mannequin, Category } from '../../types/types';
 import { v4 as uuidv4 } from 'uuid';
 import { ZeroStatus } from './utiles';
 
@@ -119,6 +119,45 @@ export const EquipmentDTO={
         return {
             ...ZeroStatus.zeroTotalStatus(),
             ...avatarStatus
+        };
+    },
+    convertMannequinToCharacterEquipped: (mannequin: Mannequin, wherehouse: EquipmentInstance[]): {main: Equipped, sub: Equipped} => {
+        const isMatch = (equipmentSimple: EquipmentSimple, equipmentInstance: EquipmentInstance): boolean => {
+            return equipmentSimple.id === equipmentInstance.id;
+        };
+        
+        const convertToEquipped = (equipmentMap: { [key in Category]?: EquipmentSimple }): Equipped => {
+            return Object.keys(equipmentMap).reduce((acc, category) => {
+                const equipment = equipmentMap[category as Category];
+                if (equipment) {
+                    const instance: EquipmentInstance | undefined = wherehouse.find(instance => isMatch(equipment, instance));
+                    if (instance) {
+                        acc[category as keyof Equipped] = instance as Equipped[keyof Equipped];
+                    }
+                }
+                return acc;
+            }, {} as Equipped);
+        };
+    
+        return {
+            main: convertToEquipped(mannequin.main),
+            sub: convertToEquipped(mannequin.sub)
+        };
+    },
+    convertCharacterEquippedToMannequin: (mainEquipped: Equipped, subEquipped: Equipped): Mannequin => {
+        return {
+            main: Object.values(mainEquipped).reduce((acc, equipment) => {
+                const simple = EquipmentDTO.convertEquipmentInstanceToEquipmentSimple(equipment);
+                const category = equipment.category; // equipmentからカテゴリを取得
+                acc[category] = simple; // カテゴリをキーとして設定
+                return acc;
+            }, {} as Mannequin['main']),
+            sub: Object.values(subEquipped).reduce((acc, equipment) => {
+                const simple = EquipmentDTO.convertEquipmentInstanceToEquipmentSimple(equipment);
+                const category = equipment.category; // equipmentからカテゴリを取得
+                acc[category] = simple; // カテゴリをキーとして設定
+                return acc;
+            }, {} as Mannequin['sub'])
         };
     }
 }

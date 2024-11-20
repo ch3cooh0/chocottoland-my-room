@@ -337,3 +337,36 @@
 .status-table-row p:hover {
   background-color: #bbdefb; /* ホバー時の背景色を調整 */
 }
+
+/* セット効果一覧のCSS */
+.set-effect-view {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f1f8e9; /* 背景色を調整 */
+  border-radius: 8px; /* 角を丸くする */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影を追加 */
+}
+
+.set-effect-title {
+  font-size: 1.5rem;
+  color: #388e3c; /* タイトルの色を調整 */
+  margin-bottom: 10px;
+}
+
+.set-effect-list {
+  list-style-type: none; /* リストのスタイルを削除 */
+  padding: 0;
+}
+
+.set-effect-item {
+  padding: 5px;
+  background-color: #e8f5e9; /* 背景色を調整 */
+  border: 1px solid #c8e6c9; /* 枠線を追加 */
+  border-radius: 4px; /* 角を丸くする */
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease; /* 背景色の変化をスムーズにする */
+}
+
+.set-effect-item:hover {
+  background-color: #c8e6c9; /* ホバー時の背景色を調整 */
+}

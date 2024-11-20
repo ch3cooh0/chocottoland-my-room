@@ -1,6 +1,6 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import { Equipment, Category, EquipmentSimple, CharacterStatus, AvatarStatus, EquippedEffect, ComboEquipment, ComboStatus } from '../../types/types';
+import { Equipment, Category, EquipmentSimple, CharacterStatus, AvatarStatus, EquippedEffect, ComboEquipment, ComboStatus, Mannequin } from '../../types/types';
 
 export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
     return new Promise((resolve, reject) => {
@@ -153,6 +153,12 @@ export function loadCharacterStatusFromJSON(filePath: string): Promise<Character
 }
 
 export function loadAvatarStatusFromJSON(filePath: string): Promise<AvatarStatus> {
+    const json = fs.readFileSync(filePath, 'utf8');
+    const data = JSON.parse(json);
+    return data;
+}
+
+export function loadMannequinFromJSON(filePath: string): Promise<Mannequin> {
     const json = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(json);
     return data;

@@ -6,11 +6,13 @@ import {
   loadCharacterStatusFromJSON,
   loadEquipmentFromCSV,
   loadEquipmentSimpleFromJSON,
+  loadMannequinFromJSON,
 } from "./modules/loader";
 import {
   writeAvatarStatusToJSON,
   writeCharacterStatusToJSON,
   writeEquipmentSimpleToJSON,
+  writeMannequinToJSON,
 } from "./modules/writer";
 import { EquipmentDTO } from "./modules/dto";
 import {
@@ -151,6 +153,20 @@ ipcMain.handle("writeAvatarStatusToJSON", async (event, path, data) => {
 });
 
 /**
+ * マネキンデータ読込
+ */
+ipcMain.handle("loadMannequinFromJSON", async (event, path) => {
+  return loadMannequinFromJSON(path);
+});
+
+/**
+ * マネキンデータ保存
+ */
+ipcMain.handle("writeMannequinToJSON", async (event, path, data) => {
+  return writeMannequinToJSON(path, data);
+});
+
+/**
  * ファイル保存ダイアログ
  */
 ipcMain.handle("show-save-dialog", async (event, defaultFileName, ext: UserFileExtension) => {
@@ -275,7 +291,6 @@ ipcMain.handle(
     const comboInfos = comboEffectUtils.getComboInfo(
       EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
     );
-    console.log('comboInfos', comboInfos);
     // 装備効果
     const equippedEffects = equippedEffectUtils.getEquippedEffect(
       EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
@@ -309,7 +324,10 @@ ipcMain.handle(
       // セット効果
       comboStatus
     );
-    return calcViewStatus.applyExtendedStatus(totalStatus);
+    return {
+      totalStatus: calcViewStatus.applyExtendedStatus(totalStatus),
+      setTexts: comboInfos.map((comboInfo) => comboInfo.comboStatus.text),
+    };
   }
 );
 

@@ -2,7 +2,7 @@
 /**
  * アプリケーション内で使用される型を定義します。
  */
-export type UserFileExtension = "wherehouse.json" | "character.json" | "avatar.json";
+export type UserFileExtension = "wherehouse.json" | "character.json" | "avatar.json" | "mannequin.json";
 /**
  * 装備のカテゴリ(部位)を表す型
  */
@@ -196,4 +196,16 @@ export interface ComboStatus {
 export interface ComboInfo {
     comboEquipment: ComboEquipment[];
     comboStatus: ComboStatus;
+}
+
+/**
+ * マネキンのデータを表す型
+ */
+export interface Mannequin {
+    main: {
+        [key in Category]?: EquipmentSimple
+    }
+    sub: {
+        [key in Category]?: EquipmentSimple
+    }
 }

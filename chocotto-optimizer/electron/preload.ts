@@ -7,6 +7,7 @@ import {
   EquipmentInstance,
   EquipmentSimple,
   Equipped,
+  Mannequin,
   StatusKey,
   UserFileExtension,
 } from "../types/types";
@@ -33,16 +34,27 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
   },
 
   // You can expose other APTs you need here.
-  // ...
+  // 装備マスターCSV読込
   loadEquipmentFromCSV: (path: string) =>
     ipcRenderer.invoke("loadEquipmentFromCSV", path),
+  // 倉庫データ
   loadEquipmentSimpleFromJSON: (path: string) =>
     ipcRenderer.invoke("loadEquipmentSimpleFromJSON", path),
+  // 倉庫データ保存
   writeEquipmentSimpleToJSON: (path: string, equipments: EquipmentSimple[]) =>
     ipcRenderer.invoke("writeEquipmentSimpleToJSON", path, equipments),
+  // マネキンデータ読込
+  loadMannequinFromJSON: (path: string) =>
+    ipcRenderer.invoke("loadMannequinFromJSON", path),
+  // マネキンデータ保存
+  writeMannequinToJSON: (path: string, mannequin: Mannequin) =>
+    ipcRenderer.invoke("writeMannequinToJSON", path, mannequin),
+  // ファイル保存ダイアログ
   showSaveDialog: (defaultFileName: string, ext: UserFileExtension) =>
     ipcRenderer.invoke("show-save-dialog", defaultFileName, ext),
+  // ファイル読込ダイアログ
   showOpenDialog: (ext: UserFileExtension) => ipcRenderer.invoke("show-open-dialog", ext),
+  // 装備データ変換
   convertEquipmentSimplesToEquipmentInstances: (
     equipmentSimples: EquipmentSimple[]
   ) =>
@@ -50,6 +62,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "convertEquipmentSimplesToEquipmentInstances",
       equipmentSimples
     ),
+  // 装備インスタンスデータ変換
   convertEquipmentInstanceToEquipmentSimple: (
     equipmentInstance: EquipmentInstance
   ) =>
@@ -57,8 +70,10 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "convertEquipmentInstanceToEquipmentSimple",
       equipmentInstance
     ),
+  // 装備データ変換
   convertEquipmentToEquipmentInstance: (equipment: Equipment) =>
     ipcRenderer.invoke("convertEquipmentToEquipmentInstance", equipment),
+  // 装備検索
   searchEquipment: (
     fixCategory: Category,
     searchName: string,
@@ -72,6 +87,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       sortKey,
       sortOrder
     ),
+  // 計算後のステータス
   calcTotalStatus: (
     characterMainEquipment: Equipped,
     characterSubEquipment: Equipped,

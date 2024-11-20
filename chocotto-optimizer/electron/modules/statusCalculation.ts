@@ -207,7 +207,9 @@ export const comboEffectUtils = {
     return comboInfos;
   },
   getComboIdMap: (equippements: EquipmentInstance[]): { [key: string]: ComboEquipment[] } => {
-    const ids: string[] = equippements.map((equipment) => equipment.id);
+    const ids: string[] = equippements
+      .filter(equipment => equipment !== null && equipment.id !== undefined) // null チェックを追加
+      .map(equipment => equipment.id);
     // 装備に関連するセット効果一覧
     const relatedComboEquipments = cache.comboEquipments.filter((combo) =>
       ids.includes(combo.equipment_id)
@@ -269,7 +271,9 @@ export const equippedEffectUtils = {
    * @returns
    */
   getEquippedEffect: (equippements: EquipmentInstance[]): EquippedEffect[] => {
-    const ids: string[] = equippements.map((equipment) => equipment.id);
+    const ids: string[] = equippements
+      .filter(equipment => equipment !== null && equipment.id !== undefined) // null チェックを追加
+      .map(equipment => equipment.id);
     return cache.equippedEffects.filter((effect) =>
       ids.includes(effect.equipment_id)
     );
@@ -563,11 +567,13 @@ export const coreEffectUtils = {
     const instances: EquipmentInstance[] = EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment);
     let tolalStatus = ZeroStatus.zeroTotalStatus();
     instances.map((instance) => {
-      if (instance.core) { 
+      if (instance &&instance.core) { 
         Object.values(instance.core).forEach((core) => {
-          Object.entries(core).forEach(([key, value]) => {
-            tolalStatus[key as keyof TotalStatus] += value;
-          });
+          if (core) {
+            Object.entries(core).forEach(([key, value]) => {
+              tolalStatus[key as keyof TotalStatus] += value;
+            });
+          }
         });
       }
     });

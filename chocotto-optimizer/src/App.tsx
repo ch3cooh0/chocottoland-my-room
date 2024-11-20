@@ -14,7 +14,7 @@ import StatusViewComponent from "./components/StatusViewComponent";
 import { EquipmentDTO } from "../electron/modules/dto";
 import CharacterEquippedComponent from "./components/CharacterEquippedComponent";
 import StatusComponent from "./components/StatusComponent";
-
+import SetEffectViewComponent from "./components/SetEffectViewComponent";
 function App() {
   /**
    * 倉庫関連
@@ -59,15 +59,29 @@ function App() {
    */
   const [characterMainEquipment, setCharacterMainEquipment] = useState<Equipped>({});
   const [characterSubEquipment, setCharacterSubEquipment] = useState<Equipped>({});
+  // マネキン読込
+  const loadMannequin = async (loadPath: string) => {
+    const mannequin = await window.ipcRenderer.invoke("loadMannequinFromJSON", loadPath);
+    const {main, sub} = EquipmentDTO.convertMannequinToCharacterEquipped(mannequin, equipmentInstances);
+    setCharacterMainEquipment(main);
+    setCharacterSubEquipment(sub);
+  };
+  // マネキン保存
+  const saveMannequin = async (savePath: string) => {
+    const mannequin = EquipmentDTO.convertCharacterEquippedToMannequin(characterMainEquipment, characterSubEquipment);
+    await window.ipcRenderer.invoke("writeMannequinToJSON", savePath, mannequin);
+  };
   /**
    * 計算後のステータス
    */
   const [totalStatus, setTotalStatus] = useState<TotalStatus>(ZeroStatus.zeroTotalStatus());
+  const [comboTexts, setComboTexts] = useState<string[]>(["なし"]);
 
   useEffect(() => {
     const calcTotalStatus = async () => {
-      const totalStatus = await window.ipcRenderer.invoke('calcTotalStatus', characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus);
+      const {totalStatus, setText} = await window.ipcRenderer.invoke('calcTotalStatus', characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus);
       setTotalStatus(totalStatus);
+      setComboTexts(setText);
     };
     calcTotalStatus();
   }, [characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus]);
@@ -95,8 +109,11 @@ function App() {
         characterSubEquipment={characterSubEquipment}
         setCharacterMainEquipment={setCharacterMainEquipment}
         setCharacterSubEquipment={setCharacterSubEquipment}
+        loadMannequin={loadMannequin}
+        saveMannequin={saveMannequin}
       />
       <StatusComponent totalStatus={totalStatus} />
+      <SetEffectViewComponent comboTexts={comboTexts} />
     </>
   );
 }

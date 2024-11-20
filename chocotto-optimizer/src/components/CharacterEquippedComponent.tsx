@@ -14,6 +14,8 @@ interface CharacterEquippedComponentProps {
   setCharacterSubEquipment: (equipment: {
     [key in Category]?: EquipmentInstance;
   }) => void;
+  loadMannequin: (filePath: string) => void;
+  saveMannequin: (filePath: string) => void;
 }
 
 const CharacterEquippedComponent: React.FC<CharacterEquippedComponentProps> = ({
@@ -22,11 +24,37 @@ const CharacterEquippedComponent: React.FC<CharacterEquippedComponentProps> = ({
   characterSubEquipment,
   setCharacterMainEquipment,
   setCharacterSubEquipment,
+  loadMannequin,
+  saveMannequin,
 }) => {
-
+  const [mannequinSavePath, setMannequinSavePath] = useState<string>("");
+  const handleMannequinLoad = async () =>{
+    const filePaths = await window.ipcRenderer.invoke(
+      "show-open-dialog",
+      "mannequin.json"
+    );
+    if (filePaths.length > 0) {
+      const filePath = filePaths[0];
+      loadMannequin(filePath);
+      setMannequinSavePath(filePath);
+    }
+  }
+  const handleMannequinSave = async () => {
+    const filePath = await window.ipcRenderer.invoke(
+      "show-save-dialog",
+      mannequinSavePath,
+      "mannequin.json"
+    );
+    if (filePath) {
+      setMannequinSavePath(filePath);
+      saveMannequin(filePath);
+    }
+  }
   return (
     <div>
       <h2>キャラクター装備</h2>
+      <button onClick={handleMannequinLoad}>マネキン読込</button>
+      <button onClick={handleMannequinSave}>マネキン保存</button>
       <div className="character-equipped-component">
         <div className="character-equipped-component-main">
           <h3>メイン装備</h3>

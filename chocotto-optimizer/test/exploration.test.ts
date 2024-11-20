@@ -46,7 +46,6 @@ describe("generateCombinations", () => {
         ]
         const characterStatus: CharacterStatus = ZeroStatus.zeroCharacterStatus()
         const avatarStatus: AvatarStatus = ZeroStatus.zeroAvatarStatus()
-        // console.log(equipmentList);
         const result = generateSingleCombinations(equipmentList, characterStatus, avatarStatus,"pow", 1);
         expect(result[0].totalStats.pow).toBe(37+14);
     });
