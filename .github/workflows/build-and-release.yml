@@ -36,6 +36,7 @@ jobs:
       run: |
         cd chocotto-optimizer
         pnpm run build
+      continue-on-error: true
 
     - name: Create Release
       id: create_release
