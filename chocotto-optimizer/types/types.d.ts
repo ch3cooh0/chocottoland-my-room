@@ -56,14 +56,21 @@ export type Core = {
     [key in CoreNo]: Partial<{ [key in StatusKey]: number }>;
 }
 
+export type ReinforceType = "物理" | "魔法" | "None";
+
+export type Reinforce = {
+    type: ReinforceType;
+    lv: number;
+}
+
 /**
  * 装備のインスタンスを表す型(装備の組み合わせ探索用)
  */
 export interface EquipmentInstance extends Equipment {
     // 装備のUUID装備を一意に識別するためのID（同じ装備を複数所持する場合があるため）
     uuid: string;
-    // 強化レベル
-    reinforceLevel: number;
+    // 強化
+    reinforce: Reinforce;
     // 特殊コア
     core: Core;
 }
@@ -74,8 +81,8 @@ export interface EquipmentInstance extends Equipment {
 export interface EquipmentSimple {
     id: string;
     name: string;
-    // 強化レベル
-    reinforceLevel: number;
+    // 強化
+    reinforce: Reinforce;
     // 特殊コア
     core: Core;
 }

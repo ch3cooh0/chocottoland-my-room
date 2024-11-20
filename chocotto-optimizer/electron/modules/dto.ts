@@ -58,7 +58,7 @@ export const EquipmentDTO={
         return {
             id: equipmentInstance.id,
             name: equipmentInstance.name,
-            reinforceLevel: equipmentInstance.reinforceLevel,
+            reinforce: equipmentInstance.reinforce,
             core: equipmentInstance.core
         };
     },
@@ -74,7 +74,10 @@ export const EquipmentDTO={
         return {
             ...equipment,
             uuid: uuidv4(),
-            reinforceLevel: 0,
+            reinforce: {
+                type: "None",
+                lv: 0
+            },
             core: {
                 1: {},
                 2: {},

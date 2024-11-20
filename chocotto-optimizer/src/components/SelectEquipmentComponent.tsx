@@ -133,7 +133,7 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
             className="equipment-card"
             onClick={() => handleSelectEquipment(equipment)}
           >
-            <p className="equipment-name">{equipment.name}: 錬成 {equipment.reinforceLevel}: 特殊コア {createStringCoreEnhancement(equipment.core)}</p>
+            <p className="equipment-name">{equipment.name}: 錬成 {equipment.reinforce.type}{equipment.reinforce.lv} 特殊コア {createStringCoreEnhancement(equipment.core)}</p>
             <div className="equipment-status">
               <div className="equipment-status-item">
                 <p className="equipment-status-key">pow</p>
@@ -199,10 +199,10 @@ const SelectEquipmentComponent: React.FC<SelectEquipmentComponentProps> = ({
                 <p className="equipment-status-key">mov</p>
                 <p className="equipment-status-value">{equipment.mov}</p>
               </div>
-              {/* <div className="equipment-status-item">
+              <div className="equipment-status-item">
                 <p className="equipment-status-key">drn</p>
                 <p className="equipment-status-value">{equipment.drn}</p>
-              </div> */}
+              </div>
             </div>
           </div>
         ))}

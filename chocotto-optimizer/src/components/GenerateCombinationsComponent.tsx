@@ -18,16 +18,21 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
     const handleGenerate = async () => {
         setIsGenerating(true);
         const result = await window.ipcRenderer.invoke("generateSingleCombinations", equipmentInstances, characterStatus, avatarStatus, selectedStat, 1);
+        
+        if (result.length > 0) {
+            const filteredMainEquipment = Object.fromEntries(
+                Object.entries(result[0].combination.main).filter(([, eq]) => (eq as EquipmentInstance).id !== "")
+            );
+            const filteredSubEquipment = Object.fromEntries(
+                Object.entries(result[0].combination.sub).filter(([, eq]) => (eq as EquipmentInstance).id !== "")
+            );
+            setCharacterMainEquipment(filteredMainEquipment);
+            setCharacterSubEquipment(filteredSubEquipment);
+        } else {
+            console.error("No combinations generated");
+        }
+        
         setCombinations(result);
-        console.log(result[0].combination.main);
-        const filteredMainEquipment = Object.fromEntries(
-            Object.entries(result[0].combination.main).filter(([key, eq]) => (eq as any).id !== "")
-        );
-        const filteredSubEquipment = Object.fromEntries(
-            Object.entries(result[0].combination.sub).filter(([key, eq]) => (eq as any).id !== "")
-        );
-        setCharacterMainEquipment(filteredMainEquipment);
-        setCharacterSubEquipment(filteredSubEquipment);
         setIsGenerating(false);
     };
 

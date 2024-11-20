@@ -1,7 +1,7 @@
 
 import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey } from "../../types/types";
 import { EquipmentDTO } from "./dto";
-import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils } from "./statusCalculation";
+import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, reinforceUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
 
 export interface CombinationResult{
@@ -55,7 +55,6 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
     const subEquipments: { [key in Category]: EquipmentInstance[] } = {
         "武器": [], "頭": [], "服": [], "首": [], "手": [], "盾": [], "背": [], "靴": []
     };
-
     parts.forEach((part) => {
         mainEquipments[part] = filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key);
         subEquipments[part] = filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key);
@@ -124,12 +123,14 @@ export function calculateStats(combination: {main: Equipped, sub: Equipped}, cha
 
     // 1.1 メイン装備
     // 1.1.1 メイン装備のステータスを加算
-    const mainStatus = calcEquippedStatus.calcRowMainStatus(mainEq);
+    const mainRowStatus = calcEquippedStatus.calcRowMainStatus(mainEq);
+    const reinforceMainStatus = reinforceUtils.calcReinforceTotalStatus(mainEq);
     // 1.1.2 特殊コア
     const coreStatus = coreEffectUtils.calcCoreEffect(mainEq);
     // 1.2 サブ装備
     // 1.2.1 サブ装備のステータスを加算
-    const subStatus = calcEquippedStatus.calcRowSubStatus(subEq);
+    const subRowStatus = calcEquippedStatus.calcRowSubStatus(subEq);
+    const reinforceSubStatus = reinforceUtils.calcReinforceTotalStatus(subEq);
     // 1.3 セット効果の適用
     const comboStatus = comboEffectUtils.calcComboEffectFromEquipped(EquipmentDTO.convertEquippedToEquipmentInstances(mainEq));
 
@@ -138,6 +139,9 @@ export function calculateStats(combination: {main: Equipped, sub: Equipped}, cha
     const equippedEffects = equippedEffectUtils.getEquippedEffect(
         EquipmentDTO.convertEquippedToEquipmentInstances(mainEq)
     );
+
+    const mainStatus = calcTotalStatus.addTotalStatus(mainRowStatus, reinforceMainStatus);
+    const subStatus = calcTotalStatus.addTotalStatus(subRowStatus, reinforceSubStatus);
     const equippedStatus = equippedEffectUtils.calcEquippedEffect(
         equippedEffects,
         mainStatus,

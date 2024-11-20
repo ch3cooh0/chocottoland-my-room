@@ -81,7 +81,7 @@ export const ZeroStatus = {
         drn: 0,
         iconid: '',
         uuid: uuid,
-        reinforceLevel: 0,
+        reinforce: { lv: 0, type: '物理' },
         core: { '1': {}, '2': {}, '3': {} }
       };
     },

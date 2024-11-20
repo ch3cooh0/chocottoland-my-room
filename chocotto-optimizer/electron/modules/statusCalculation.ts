@@ -8,6 +8,8 @@ import {
   ComboEquipment,
   ComboStatus,
   ComboInfo,
+  Reinforce,
+  Category,
 } from "../../types/types";
 import {
   loadComboEquipmentFromCSV,
@@ -17,7 +19,7 @@ import {
 import { EquipmentDTO } from "./dto";
 import { ZeroStatus } from "./utiles";
 
-let cache = {
+const cache = {
   equippedEffects: [] as EquippedEffect[],
   comboEquipments: [] as ComboEquipment[],
   comboStatuses: [] as ComboStatus[],
@@ -104,7 +106,7 @@ export const calcEquippedStatus = {
    * @returns
    */
   calcRowSubStatus: (subEquipped: Equipped): TotalStatus => {
-    let rowSubStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
+    const rowSubStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     for (const category in subEquipped) {
       const equippedItem: EquipmentInstance =
         subEquipped[category as keyof Equipped];
@@ -130,7 +132,7 @@ export const calcEquippedStatus = {
    * @returns
    */
   calcRowMainStatus: (mainEquipped: Equipped): TotalStatus => {
-    let rowMainStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
+    const rowMainStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     for (const category in mainEquipped) {
       const equippedItem: EquipmentInstance =
         mainEquipped[category as keyof Equipped];
@@ -193,7 +195,7 @@ export const comboEffectUtils = {
   getComboInfo: (equippements: EquipmentInstance[]): ComboInfo[] => {
     const comboIdMap = comboEffectUtils.getComboIdMap(equippements);
     // セット効果発動候補
-    const combos = Object.entries(comboIdMap).filter(([comboId, comboEquipments]) => comboEffectUtils.validateCombo(comboEquipments));
+    const combos = Object.entries(comboIdMap).filter(([, comboEquipments]) => comboEffectUtils.validateCombo(comboEquipments));
     const comboInfos = Object.values(combos).map((combo) => {
       const status = cache.comboStatuses.find(
         (status) => status.combo_id === combo[0]
@@ -314,6 +316,17 @@ export const equippedEffectUtils = {
     }, ZeroStatus.zeroTotalStatus());
   },
 
+  /**
+   * 装備の基本ステータスを計算する(錬成上昇量も含まれる？)
+   * @param effect 
+   * @param mainStatus 
+   * @param subStatus 
+   * @param comboStatus 
+   * @param characterStatus 
+   * @param avatarStatus 
+   * @param coreStatus 
+   * @returns 
+   */
   calcPlayerBaseStatus: (
     effect: EquippedEffect,
     mainStatus: TotalStatus,
@@ -565,7 +578,7 @@ export const equippedEffectUtils = {
 export const coreEffectUtils = {
   calcCoreEffect: (characterMainEquipment: Equipped): TotalStatus => {
     const instances: EquipmentInstance[] = EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment);
-    let tolalStatus = ZeroStatus.zeroTotalStatus();
+    const tolalStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     instances.map((instance) => {
       if (instance &&instance.core) { 
         Object.values(instance.core).forEach((core) => {
@@ -600,3 +613,130 @@ export const calcViewStatus = {
     }
   }
 }
+
+export const reinforceUtils = {
+  calcReinforceEffect: (reinforce: Reinforce, category: Category): number => {
+    switch(category){
+      case "武器": return reinforceUtils.weapon(reinforce.lv);
+      case "盾": return reinforceUtils.shield(reinforce.lv);
+      default: return reinforceUtils.other(reinforce.lv);
+    }
+  },
+  weapon: (lv: number): number => {
+      switch(lv){
+        case 1: return 3;
+        case 2: return 7;
+        case 3: return 12;
+        case 4: return 18;
+        case 5: return 25;
+        case 6: return 33;
+        case 7: return 42;
+        case 8: return 52;
+        case 9: return 63;
+        case 10: return 75;
+        case 11: return 88;
+        case 12: return 101;
+        case 13: return 114;
+        case 14: return 127;
+        case 15: return 141;
+        case 16: return 155;
+        case 17: return 169;
+        case 18: return 184;
+        case 19: return 199;
+        case 20: return 214;
+        default: return 0;
+      }
+  },
+  shield: (lv: number): number => {
+    switch(lv){
+      case 1: return 1;
+      case 2: return 3;
+      case 3: return 6;
+      case 4: return 10;
+      case 5: return 15;
+      case 6: return 21;
+      case 7: return 28;
+      case 8: return 36;
+      case 9: return 45;
+      case 10: return 55;
+      case 11: return 66;
+      case 12: return 77;
+      case 13: return 88;
+      case 14: return 99;
+      case 15: return 110;
+      case 16: return 122;
+      case 17: return 134;
+      case 18: return 146;
+      case 19: return 158;
+      case 20: return 170;
+      default: return 0;
+    }
+  },
+  other: (lv: number): number => {
+    switch(lv){
+      case 1: return 1;
+      case 2: return 2;
+      case 3: return 3;
+      case 4: return 5;
+      case 5: return 7;
+      case 6: return 9;
+      case 7: return 11;
+      case 8: return 13;
+      case 9: return 16;
+      case 10: return 20;
+      case 11: return 25;
+      case 12: return 30;
+      case 13: return 35;
+      case 14: return 40;
+      case 15: return 45;
+      case 16: return 50;
+      case 17: return 55;
+      case 18: return 60;
+      case 19: return 65;
+      case 20: return 70;
+      default: return 0;
+    }
+  },
+  calcReinforceStatus: (reinforce: Reinforce, category: Category): TotalStatus => {
+    if(reinforce.type === "物理"){
+      switch(category){
+        case "武器": return {
+          ...ZeroStatus.zeroTotalStatus(),
+          atk: reinforceUtils.calcReinforceEffect(reinforce, category),
+        }
+        case "盾": return {
+          ...ZeroStatus.zeroTotalStatus(),
+          def: reinforceUtils.calcReinforceEffect(reinforce, category),
+        }
+        default: return {
+          ...ZeroStatus.zeroTotalStatus(),
+          def: reinforceUtils.calcReinforceEffect(reinforce, category),
+        }
+      }
+    } else if(reinforce.type === "魔法"){
+      switch(category){
+        case "武器": return {
+          ...ZeroStatus.zeroTotalStatus(),
+          mat: reinforceUtils.calcReinforceEffect(reinforce, category),
+        }
+        case "盾": return {
+          ...ZeroStatus.zeroTotalStatus(),
+          mdf: reinforceUtils.calcReinforceEffect(reinforce, category),
+        }
+        default: return {
+          ...ZeroStatus.zeroTotalStatus(),
+          mdf: reinforceUtils.calcReinforceEffect(reinforce, category),
+        }
+      }
+    }else{
+      return ZeroStatus.zeroTotalStatus();
+    }
+  },
+  calcReinforceTotalStatus: (equipped: Equipped): TotalStatus => {
+    const totalStatus = Object.entries(equipped).map(([category, equipment]) => {
+      return reinforceUtils.calcReinforceStatus(equipment.reinforce, category as Category);
+    });
+    return calcTotalStatus.addMultipleTotalStatus(...totalStatus);
+  }
+}
+

@@ -62,7 +62,7 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
           ? {
               ...equipment,
               core: equipmentInstance.core,
-              reinforceLevel: equipmentInstance.reinforceLevel,
+              reinforce: equipmentInstance.reinforce,
             }
           : equipment
       )
@@ -157,7 +157,7 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
           .map((equipment) => (
             <div key={equipment.id} className="warehouse-card">
               <p>
-                {equipment.name}:錬成 {equipment.reinforceLevel} 特殊コア{" "}
+                {equipment.name}:錬成 {equipment.reinforce.type}{equipment.reinforce.lv} 特殊コア{" "}
                 {createCoreEnhancement(equipment.core)}
               </p>
               <button onClick={() => handleOpenDetailModal(equipment)}>

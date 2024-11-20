@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Core, CoreNo, EquipmentInstance, StatusKey } from "../../types/types";
+import { Core, CoreNo, EquipmentInstance, Reinforce, ReinforceType, StatusKey } from "../../types/types";
 
 interface EquipmentDetailComponentProps {
   equipmentInstance: EquipmentInstance | null;
@@ -12,11 +12,11 @@ const EquipmentDetailComponent: React.FC<EquipmentDetailComponentProps> = ({
   handleCloseDetailModal,
   handleApplyCore,
 }) => {
-  const [reinforceLevel, setReinforceLevel] = useState<number>(equipmentInstance?.reinforceLevel || 0);
+  const [reinforce, setReinforce] = useState<Reinforce>(equipmentInstance?.reinforce || {type: "None", lv: 0});
   const [core, setCore] = useState<Core>(() => equipmentInstance?.core || {1:{},2:{},3:{}} as Core);
 
-  const handleReinforceLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setReinforceLevel(Number(event.target.value));
+  const handleReinforceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setReinforce({...reinforce, lv: Number(event.target.value)});
   };
 
   const handleCoreChangeKey = (no: CoreNo, key: StatusKey | "") => {
@@ -32,7 +32,7 @@ const EquipmentDetailComponent: React.FC<EquipmentDetailComponentProps> = ({
   };
 
   const handleApplyCoreButtonClick = () => {
-    handleApplyCore({...equipmentInstance, core: core, reinforceLevel: reinforceLevel} as EquipmentInstance);
+    handleApplyCore({...equipmentInstance, core: core, reinforce: reinforce} as EquipmentInstance);
   };
 
   return (
@@ -43,11 +43,19 @@ const EquipmentDetailComponent: React.FC<EquipmentDetailComponentProps> = ({
         <h2>{equipmentInstance?.name}の詳細</h2>
         <div>
           <label>
+            強化:
+            <select value={reinforce.type} onChange={(e) => setReinforce({...reinforce, type: e.target.value as ReinforceType})}>
+              <option value="物理">物理</option>
+              <option value="魔法">魔法</option>
+              <option value="None">なし</option>
+            </select>
+          </label>
+          <label>
             錬成レベル:
             <input
               type="number"
-              value={reinforceLevel}
-              onChange={handleReinforceLevelChange}
+              value={reinforce.lv}
+              onChange={handleReinforceChange}
               min="0"
               max="20"
             />

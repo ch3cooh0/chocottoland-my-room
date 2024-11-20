@@ -30,6 +30,7 @@ import {
   equippedEffectUtils,
   loadCache,
   calcViewStatus,
+  reinforceUtils,
 } from "./modules/statusCalculation";
 import { generateSingleCombinations } from "./modules/exploration";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -280,6 +281,8 @@ ipcMain.handle(
     const rowMainStatus = calcEquippedStatus.calcRowMainStatus(
       characterMainEquipment
     );
+    // 装備強化の合計値
+    const reinforceStatus = reinforceUtils.calcReinforceTotalStatus(characterMainEquipment);
     // 特殊コアの合計値
     const coreStatus = coreEffectUtils.calcCoreEffect(characterMainEquipment);
 
@@ -287,6 +290,8 @@ ipcMain.handle(
     const rowSubStatus = calcEquippedStatus.calcRowSubStatus(
       characterSubEquipment
     );
+    // 装備強化の合計値
+    const reinforceSubStatus = reinforceUtils.calcReinforceTotalStatus(characterSubEquipment);
     // コンボ情報
     const comboInfos = comboEffectUtils.getComboInfo(
       EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
@@ -299,11 +304,14 @@ ipcMain.handle(
     // コンボ増加量
     const comboStatus = comboEffectUtils.calcComboEffect(comboInfos);
 
+    const mainStatus = calcTotalStatus.addTotalStatus(rowMainStatus, reinforceStatus);
+    const subStatus = calcTotalStatus.addTotalStatus(rowSubStatus, reinforceSubStatus);
+
     // 装備増加量
     const equippedStatus = equippedEffectUtils.calcEquippedEffect(
       equippedEffects,
-      rowMainStatus,
-      rowSubStatus,
+      mainStatus,
+      subStatus,
       comboStatus,
       characterStatus,
       avatarStatus,
