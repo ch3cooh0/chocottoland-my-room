@@ -285,6 +285,7 @@ ipcMain.handle(
     const reinforceStatus = reinforceUtils.calcReinforceTotalStatus(characterMainEquipment);
     // 特殊コアの合計値
     const coreStatus = coreEffectUtils.calcCoreEffect(characterMainEquipment);
+    console.log('coreStatus',coreStatus);
 
     // サブ装備の純粋な合計値
     const rowSubStatus = calcEquippedStatus.calcRowSubStatus(
@@ -330,7 +331,8 @@ ipcMain.handle(
       // 装備効果
       equippedStatus,
       // セット効果
-      comboStatus
+      comboStatus,
+      coreStatus
     );
     return {
       totalStatus: calcViewStatus.applyExtendedStatus(totalStatus),

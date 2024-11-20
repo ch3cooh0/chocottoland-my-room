@@ -36,11 +36,17 @@ describe('loader:loadEquipmentFromCSV', () => {
 describe('loader:loadEquipmentSimpleFromJSON', () => {
     it(createTitle('loadEquipmentSimpleFromJSON:single', Scale.medium, TestTags.unit), async () => {
         const equipments = await loadEquipmentSimpleFromJSON('./test/data/loadEquipmentSimpleFromJSON.single.json');
+        
         expect(equipments).toBeDefined();
         expect(equipments.length).toEqual(1);
         expect(equipments[0].id).toEqual("7da9fdcf-befa-4f68-a26c-c4225a5f325d");
         expect(equipments[0].name).toEqual("銅の剣");
-        expect(equipments[0].reinforceLevel).toEqual(11);
-        expect(equipments[0].core).toEqual({ pow: 1, int: 2 });
+        expect(equipments[0].reinforce).toEqual({ lv: 11, type: '物理' });
+        expect(equipments[0].core).toEqual({ 1: { pow: 1 }, 2: {}, 3: {} });
+    });
+    it(createTitle('loadEquipmentSimpleFromJSON:multiple', Scale.medium, TestTags.unit), async () => {
+        const equipments = await loadEquipmentSimpleFromJSON('./test/data/loadEquipmentSimpleFromJSON.multiple.json');
+        expect(equipments).toBeDefined();
+        expect(equipments.length).toEqual(2);
     });
 });

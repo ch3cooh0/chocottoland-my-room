@@ -1,9 +1,11 @@
 import { 服, 盾, 背, 靴, 頭, 首, 手, 武器 } from "./testConst";
 import { generateSingleCombinations, calculateStats } from "../electron/modules/exploration";
-import { AvatarStatus, CharacterStatus, EquipmentInstance } from "../types/types";
+import { AvatarStatus, CharacterStatus, Equipment, EquipmentInstance } from "../types/types";
 import { it, describe, expect, beforeAll } from "vitest";
 import { ZeroStatus } from "../electron/modules/utiles";
 import { loadCache } from "../electron/modules/statusCalculation";
+import { loadEquipmentSimpleFromJSON } from "../electron/modules/loader";
+import { EquipmentDTO } from "../electron/modules/dto";
 
 beforeAll(async () => {
     await loadCache();
@@ -110,5 +112,18 @@ describe("calculateStats", () => {
         const sub = ZeroStatus.zeroEquipped()
         const result = calculateStats({main, sub}, characterStatus, avatarStatus);
         expect(result.pow).toBe(257);
+    });
+});
+
+describe("generateCombinations", async () => {
+    it("pow", async () => {
+        const equipmentList: EquipmentInstance[] = [
+            { ...武器.銅の剣, uuid: "武器1", reinforce: { lv: 0, type: '物理' }, core: {1: {}, 2: {}, 3: {}} },
+            { ...武器.銅の剣, uuid: "武器2", reinforce: { lv: 0, type: '物理' }, core: {1: {pow: 1}, 2: {}, 3: {}}, category: "武器" },
+        ]
+        const characterStatus: CharacterStatus = ZeroStatus.zeroCharacterStatus()
+        const avatarStatus: AvatarStatus = ZeroStatus.zeroAvatarStatus()
+        const result = generateSingleCombinations(equipmentList, characterStatus, avatarStatus,"pow", 1);
+        console.log(equipmentList);
     });
 });

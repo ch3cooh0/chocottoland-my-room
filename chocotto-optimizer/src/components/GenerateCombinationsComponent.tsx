@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { EquipmentInstance, CharacterStatus, AvatarStatus, Equipped } from "../../types/types";
 import { CombinationResult } from "../../electron/modules/exploration";
+import { toast } from 'react-hot-toast';
 
 interface GenerateCombinationsComponentProps {
     equipmentInstances: EquipmentInstance[];
@@ -29,7 +30,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
             setCharacterMainEquipment(filteredMainEquipment);
             setCharacterSubEquipment(filteredSubEquipment);
         } else {
-            console.error("No combinations generated");
+            toast.error("組み合わせの生成に失敗しました");
         }
         
         setCombinations(result);

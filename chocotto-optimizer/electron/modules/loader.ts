@@ -2,6 +2,11 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import { Equipment, Category, EquipmentSimple, CharacterStatus, AvatarStatus, EquippedEffect, ComboEquipment, ComboStatus, Mannequin } from '../../types/types';
 
+/**
+ * CSVファイルを読み込んで、Equipmentの配列を返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
     return new Promise((resolve, reject) => {
         const equipments: Equipment[] = [];
@@ -45,6 +50,11 @@ export function loadEquipmentFromCSV(filePath: string): Promise<Equipment[]> {
     });
 }
 
+/**
+ * CSVファイルを読み込んで、EquippedEffectの配列を返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadEquippedEffectFromCSV(filePath: string): Promise<EquippedEffect[]> {
     return new Promise((resolve, reject) => {
         const equippedEffects: EquippedEffect[] = [];
@@ -73,6 +83,11 @@ export function loadEquippedEffectFromCSV(filePath: string): Promise<EquippedEff
     });
 }
 
+/**
+ * CSVファイルを読み込んで、ComboEquipmentの配列を返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadComboEquipmentFromCSV(filePath: string): Promise<ComboEquipment[]> {
     return new Promise((resolve, reject) => {
         const comboEquipments: ComboEquipment[] = [];
@@ -99,6 +114,11 @@ export function loadComboEquipmentFromCSV(filePath: string): Promise<ComboEquipm
     });
 }
 
+/**
+ * CSVファイルを読み込んで、ComboStatusの配列を返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadComboStatusFromCSV(filePath: string): Promise<ComboStatus[]> {
     return new Promise((resolve, reject) => {
         const comboStatuses: ComboStatus[] = [];
@@ -140,24 +160,44 @@ export function loadComboStatusFromCSV(filePath: string): Promise<ComboStatus[]>
     });
 }
 
+/**
+ * JSONファイルを読み込んで、EquipmentSimpleの配列を返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadEquipmentSimpleFromJSON(filePath: string): Promise<EquipmentSimple[]> {
     const json = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(json);
     return data;
 }
 
+/**
+ * JSONファイルを読み込んで、CharacterStatusを返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadCharacterStatusFromJSON(filePath: string): Promise<CharacterStatus> {
     const json = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(json);
     return data;
 }
 
+/**
+ * JSONファイルを読み込んで、AvatarStatusを返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadAvatarStatusFromJSON(filePath: string): Promise<AvatarStatus> {
     const json = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(json);
     return data;
 }
 
+/**
+ * JSONファイルを読み込んで、Mannequinを返す
+ * @param filePath 
+ * @returns 
+ */
 export function loadMannequinFromJSON(filePath: string): Promise<Mannequin> {
     const json = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(json);

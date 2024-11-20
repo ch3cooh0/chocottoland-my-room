@@ -59,7 +59,6 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
         mainEquipments[part] = filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key);
         subEquipments[part] = filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key);
     });
-
     // 組み合わせの総数が膨大になる可能性があるため、上位N件のみを保持
     const combinations: CombinationResult[] = [];
     const maxResults = N;
@@ -80,9 +79,8 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
         }
 
         const part = parts[index];
-
-        if (mainEquipments[part].length === 0) {
-            // mainEquipments[part]が空の場合、indexを進める
+        if (mainEquipments[part].length === 0 && subEquipments[part].length === 0) {
+            // mainEquipments[part]とsubEquipments[part]が両方空の場合、indexを進める
             combine(index + 1, currentCombination, usedEquipments);
         } else {
             mainEquipments[part].forEach((mainEq) => {
@@ -96,8 +94,10 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
                     if(subEquipments[part].length === 0){
                         combine(index + 1, { main: newMainEq, sub: currentCombination.sub }, newUsedEquipments);
                     } else {
+                        let subUsed = true;
                         subEquipments[part].forEach((subEq) => {
                             if (subEq.uuid !== mainEq.uuid && !newUsedEquipments.has(subEq.uuid)) {
+                                subUsed = false;
                                 const newUsedEquipmentsWithSub = new Set(newUsedEquipments);
                                 newUsedEquipmentsWithSub.add(subEq.uuid);
                                 const newSubEq = {
@@ -107,9 +107,27 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
                                 combine(index + 1, { main: newMainEq, sub: newSubEq }, newUsedEquipmentsWithSub);
                             }
                         });
+                        if(subUsed){
+                            combine(index + 1, { main: newMainEq, sub: currentCombination.sub }, newUsedEquipments);
+                        }
                     }
                 }
             });
+
+            // サブ装備のみを考慮する場合
+            if (mainEquipments[part].length === 0) {
+                subEquipments[part].forEach((subEq) => {
+                    if (!usedEquipments.has(subEq.uuid)) {
+                        const newUsedEquipments = new Set(usedEquipments);
+                        newUsedEquipments.add(subEq.uuid);
+                        const newSubEq = {
+                            ...currentCombination.sub,
+                            [part]: subEq
+                        }
+                        combine(index + 1, { main: currentCombination.main, sub: newSubEq }, newUsedEquipments);
+                    }
+                });
+            }
         }
     }
     combine(0, {main: ZeroStatus.zeroEquipped(), sub: ZeroStatus.zeroEquipped()}, new Set());

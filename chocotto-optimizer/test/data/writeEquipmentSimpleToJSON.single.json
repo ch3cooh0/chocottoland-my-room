@@ -2,7 +2,10 @@
   {
     "id": "7da9fdcf-befa-4f68-a26c-c4225a5f325d",
     "name": "銅の剣",
-    "reinforceLevel": 11,
+    "reinforce": {
+      "lv": 11,
+      "type": "物理"
+    },
     "core": {
       "1": {
         "pow": 1

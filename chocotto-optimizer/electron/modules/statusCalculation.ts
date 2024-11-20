@@ -734,7 +734,11 @@ export const reinforceUtils = {
   },
   calcReinforceTotalStatus: (equipped: Equipped): TotalStatus => {
     const totalStatus = Object.entries(equipped).map(([category, equipment]) => {
-      return reinforceUtils.calcReinforceStatus(equipment.reinforce, category as Category);
+      if(equipment){
+        return reinforceUtils.calcReinforceStatus(equipment.reinforce, category as Category);
+      }else{
+        return ZeroStatus.zeroTotalStatus();
+      }
     });
     return calcTotalStatus.addMultipleTotalStatus(...totalStatus);
   }
