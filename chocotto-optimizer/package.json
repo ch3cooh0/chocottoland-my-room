@@ -2,6 +2,8 @@
   "name": "chocotto-optimizer",
   "private": true,
   "version": "0.0.0",
+  "description": "アプリケーションの説明をここに記入",
+  "author": "ch3cooh",
   "type": "module",
   "scripts": {
     "dev": "vite",
