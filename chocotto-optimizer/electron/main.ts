@@ -31,7 +31,7 @@ import {
   loadCache,
   calcViewStatus,
 } from "./modules/statusCalculation";
-
+import { generateSingleCombinations } from "./modules/exploration";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "..");
@@ -330,5 +330,12 @@ ipcMain.handle(
     };
   }
 );
+
+/**
+ * 探索結果生成
+ */
+ipcMain.handle("generateSingleCombinations", async (event, equipmentList, characterStatus, avatarStatus, key, N) => {
+  return generateSingleCombinations(equipmentList, characterStatus, avatarStatus, key, N);
+});
 
 app.whenReady().then(createWindow);

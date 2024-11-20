@@ -101,4 +101,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       characterStatus,
       avatarStatus
     ),
+  // 探索結果生成
+  generateSingleCombinations: (equipmentList: EquipmentInstance[], characterStatus: CharacterStatus, avatarStatus: AvatarStatus, key: StatusKey, N: number) =>
+    ipcRenderer.invoke("generateSingleCombinations", equipmentList, characterStatus, avatarStatus, key, N),
 });

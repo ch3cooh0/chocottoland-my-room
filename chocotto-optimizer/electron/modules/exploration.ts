@@ -4,7 +4,7 @@ import { EquipmentDTO } from "./dto";
 import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
 
-interface CombinationResult{
+export interface CombinationResult{
     combination: { main: Equipped; sub: Equipped };
     totalStats: TotalStatus;
 }

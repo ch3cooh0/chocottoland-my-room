@@ -15,6 +15,7 @@ import { EquipmentDTO } from "../electron/modules/dto";
 import CharacterEquippedComponent from "./components/CharacterEquippedComponent";
 import StatusComponent from "./components/StatusComponent";
 import SetEffectViewComponent from "./components/SetEffectViewComponent";
+import GenerateCombinationsComponent from "./components/GenerateCombinationsComponent";
 function App() {
   /**
    * 倉庫関連
@@ -114,6 +115,13 @@ function App() {
       />
       <StatusComponent totalStatus={totalStatus} />
       <SetEffectViewComponent comboTexts={comboTexts} />
+      <GenerateCombinationsComponent
+        equipmentInstances={equipmentInstances}
+        characterStatus={characterStatus}
+        avatarStatus={avatarStatus}
+        setCharacterMainEquipment={setCharacterMainEquipment}
+        setCharacterSubEquipment={setCharacterSubEquipment}
+      />
     </>
   );
 }
