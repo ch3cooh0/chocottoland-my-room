@@ -35,4 +35,10 @@ jobs:
 
     - name: Run tests
       shell: pwsh
+      cd chocotto-optimizer
       run: pnpm run test
+
+    - name: Run lint
+      shell: pwsh
+      cd chocotto-optimizer
+      run: pnpm run lint
