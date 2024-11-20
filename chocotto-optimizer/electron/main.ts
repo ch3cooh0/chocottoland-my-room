@@ -30,7 +30,6 @@ import {
   equippedEffectUtils,
   loadCache,
   calcViewStatus,
-  reinforceUtils,
 } from "./modules/statusCalculation";
 import { generateSingleCombinations } from "./modules/exploration";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -277,22 +276,17 @@ ipcMain.handle(
     avatarStatus: AvatarStatus
   ) => {
     loadCache();
-    // メイン装備の純粋な合計値
-    const rowMainStatus = calcEquippedStatus.calcRowMainStatus(
+    // メイン装備の錬成強化ステータスを含んだ合計ステータス
+    const mainReinforcedStatus = calcEquippedStatus.calcMainEquippedReinforcedStatus(
       characterMainEquipment
     );
-    // 装備強化の合計値
-    const reinforceStatus = reinforceUtils.calcReinforceTotalStatus(characterMainEquipment);
     // 特殊コアの合計値
     const coreStatus = coreEffectUtils.calcCoreEffect(characterMainEquipment);
-    console.log('coreStatus',coreStatus);
 
-    // サブ装備の純粋な合計値
-    const rowSubStatus = calcEquippedStatus.calcRowSubStatus(
+    // サブ装備の錬成強化ステータスを含んだ合計ステータス
+    const subReinforcedStatus = calcEquippedStatus.calcSubEquippedReinforcedStatus(
       characterSubEquipment
     );
-    // 装備強化の合計値
-    const reinforceSubStatus = reinforceUtils.calcReinforceTotalStatus(characterSubEquipment);
     // コンボ情報
     const comboInfos = comboEffectUtils.getComboInfo(
       EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
@@ -305,14 +299,11 @@ ipcMain.handle(
     // コンボ増加量
     const comboStatus = comboEffectUtils.calcComboEffect(comboInfos);
 
-    const mainStatus = calcTotalStatus.addTotalStatus(rowMainStatus, reinforceStatus);
-    const subStatus = calcTotalStatus.addTotalStatus(rowSubStatus, reinforceSubStatus);
-
     // 装備増加量
     const equippedStatus = equippedEffectUtils.calcEquippedEffect(
       equippedEffects,
-      mainStatus,
-      subStatus,
+      mainReinforcedStatus,
+      subReinforcedStatus,
       comboStatus,
       characterStatus,
       avatarStatus,
@@ -326,8 +317,8 @@ ipcMain.handle(
       // アバターステータス
       EquipmentDTO.convertAvatarStatusToTotalStatus(avatarStatus),
       // 装備
-      rowMainStatus,
-      rowSubStatus,
+      mainReinforcedStatus,
+      subReinforcedStatus,
       // 装備効果
       equippedStatus,
       // セット効果

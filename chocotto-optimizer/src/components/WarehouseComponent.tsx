@@ -155,7 +155,7 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
           .filter((equipment) => equipment.category === selectedCategory)
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((equipment) => (
-            <div key={equipment.id} className="warehouse-card">
+            <div key={equipment.uuid} className="warehouse-card">
               <p>
                 {equipment.name}:錬成 {equipment.reinforce.type}{equipment.reinforce.lv} 特殊コア{" "}
                 {createCoreEnhancement(equipment.core)}

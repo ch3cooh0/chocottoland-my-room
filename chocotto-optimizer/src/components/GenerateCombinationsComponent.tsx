@@ -18,23 +18,30 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
 
     const handleGenerate = async () => {
         setIsGenerating(true);
-        const result = await window.ipcRenderer.invoke("generateSingleCombinations", equipmentInstances, characterStatus, avatarStatus, selectedStat, 1);
-        
-        if (result.length > 0) {
-            const filteredMainEquipment = Object.fromEntries(
-                Object.entries(result[0].combination.main).filter(([, eq]) => (eq as EquipmentInstance).id !== "")
-            );
-            const filteredSubEquipment = Object.fromEntries(
-                Object.entries(result[0].combination.sub).filter(([, eq]) => (eq as EquipmentInstance).id !== "")
-            );
-            setCharacterMainEquipment(filteredMainEquipment);
-            setCharacterSubEquipment(filteredSubEquipment);
-        } else {
-            toast.error("組み合わせの生成に失敗しました");
+        try {
+            console.log(equipmentInstances);
+            const result = await window.ipcRenderer.invoke("generateSingleCombinations", equipmentInstances, characterStatus, avatarStatus, selectedStat, 1);
+            console.log(result);
+            if (result.length > 0) {
+                const filteredMainEquipment = Object.fromEntries(
+                    Object.entries(result[0].combination.main).filter(([, eq]) => (eq as EquipmentInstance).id !== "")
+                );
+                const filteredSubEquipment = Object.fromEntries(
+                    Object.entries(result[0].combination.sub).filter(([, eq]) => (eq as EquipmentInstance).id !== "")
+                );
+                setCharacterMainEquipment(filteredMainEquipment);
+                setCharacterSubEquipment(filteredSubEquipment);
+            } else {
+                toast.error("組み合わせの生成に失敗しました");
+            }
+            
+            setCombinations(result);
+        } catch (error) {
+            // console.error("Error generating combinations:", error);
+            toast.error("組み合わせの生成中にエラーが発生しました");
+        } finally {
+            setIsGenerating(false);
         }
-        
-        setCombinations(result);
-        setIsGenerating(false);
     };
 
     return (
