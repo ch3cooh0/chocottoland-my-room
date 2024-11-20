@@ -30,6 +30,7 @@ jobs:
       shell: pwsh
       run: |
         npm install -g pnpm
+        cd chocottoland-my-room/chocotto-optimizer
         pnpm install
 
     - name: Run tests
