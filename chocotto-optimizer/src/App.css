@@ -1,0 +1,372 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.warehouse-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.warehouse-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.25rem;
+  margin: 0.25rem;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.warehouse-card p {
+  margin: 0.25rem 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.warehouse-card button {
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  color: #333;
+  align-self: flex-end;
+}
+
+.category-button {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.category-button:hover {
+  background-color: #d0d0d0;
+}
+
+.category-button.selected {
+  background-color: #646cff;
+  color: white;
+}
+
+.warehouse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.warehouse h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.warehouse button {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.warehouse button:hover {
+  background-color: #d0d0d0;
+}
+
+.warehouse button.selected {
+  background-color: #646cff;
+  color: white;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 600px;
+}
+
+.search-equipment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-area input[type="text"] {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-area select {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.result-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.equipment-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.equipment-card p {
+  margin: 0.25rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.equipment-name {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.equipment-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.equipment-status-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  width: 12%;
+}
+
+.equipment-status-key {
+  font-weight: bold;
+}
+
+.equipment-status-value {
+  margin-left: 1rem;
+  color: #666;
+  font-size: 0.875rem;
+  padding-left: 0.5rem;
+}
+
+/* ステータス画面のCSS */
+.status-view {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+}
+
+.status-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 48%;
+}
+
+.status-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.status-button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.status-label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  width: 20%;
+}
+
+.status-input {
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  width: 50%;
+}
+
+/* キャラクター装備画面のCSS */
+.character-equipped-component {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #e0f7fa; /* 背景色を調整 */
+}
+
+.character-equipped-component-main {
+  width: 50%;
+  background-color: #f1f8e9; /* 背景色を調整 */
+}
+
+.character-equipped-component-sub {
+  width: 50%;
+  background-color: #fff3e0; /* 背景色を調整 */
+}
+
+.character-equipped-component-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #fce4ec; /* 背景色を調整 */
+}
+
+.character-equipped-component-item label {
+  width: 10%;
+  font-weight: bold;
+  background-color: #e8eaf6; /* 背景色を調整 */
+}
+
+.character-equipped-component-item-select {
+  width: 70%;
+  background-color: #e3f2fd; /* 背景色を調整 */
+  cursor: pointer; /* クリック可能であることを示す */
+  transition: background-color 0.3s ease; /* 背景色の変化をスムーズにする */
+
+  &:hover {
+    background-color: #bbdefb; /* ホバー時の背景色を調整 */
+  }
+}
+
+.character-equipped-component-item button {
+  width: 20%;
+  background-color: #f9fbe7; /* 背景色を調整 */
+}
+
+/* ステータス合計値画面のCSS */
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fafafa; /* 背景色を調整 */
+}
+
+.status-table-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0; /* 下線を追加 */
+  width: 100%;
+}
+
+.status-table-row p {
+  margin: 0;
+  padding: 5px;
+  background-color: #e3f2fd; /* 背景色を調整 */
+  border-radius: 4px; /* 角を丸くする */
+  border: 1px solid #ccc;
+  transition: background-color 0.3s ease; /* 背景色の変化をスムーズにする */
+  width: 100%;
+}
+
+.status-table-row p:hover {
+  background-color: #bbdefb; /* ホバー時の背景色を調整 */
+}
+
+/* セット効果一覧のCSS */
+.set-effect-view {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f1f8e9; /* 背景色を調整 */
+  border-radius: 8px; /* 角を丸くする */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影を追加 */
+}
+
+.set-effect-title {
+  font-size: 1.5rem;
+  color: #388e3c; /* タイトルの色を調整 */
+  margin-bottom: 10px;
+}
+
+.set-effect-list {
+  list-style-type: none; /* リストのスタイルを削除 */
+  padding: 0;
+}
+
+.set-effect-item {
+  padding: 5px;
+  background-color: #e8f5e9; /* 背景色を調整 */
+  border: 1px solid #c8e6c9; /* 枠線を追加 */
+  border-radius: 4px; /* 角を丸くする */
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease; /* 背景色の変化をスムーズにする */
+}
+
+.set-effect-item:hover {
+  background-color: #c8e6c9; /* ホバー時の背景色を調整 */
+}
