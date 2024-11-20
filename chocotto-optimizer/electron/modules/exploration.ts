@@ -176,7 +176,8 @@ export function calculateStats(combination: {main: Equipped, sub: Equipped}, cha
         mainStatus,
         subStatus,
         equippedStatus,
-        comboStatus
+        comboStatus,
+        coreStatus
     );
     return calcViewStatus.applyExtendedStatus(totalStatus);
 }
