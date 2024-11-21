@@ -1,7 +1,7 @@
 
 import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey } from "../../types/types";
 import { EquipmentDTO } from "./dto";
-import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, reinforceUtils } from "./statusCalculation";
+import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
 
 export interface CombinationResult{
@@ -141,14 +141,12 @@ export function calculateStats(combination: {main: Equipped, sub: Equipped}, cha
 
     // 1.1 メイン装備
     // 1.1.1 メイン装備のステータスを加算
-    const mainRowStatus = calcEquippedStatus.calcRowMainStatus(mainEq);
-    const reinforceMainStatus = reinforceUtils.calcReinforceTotalStatus(mainEq);
+    const mainReinforcedStatus = calcEquippedStatus.calcMainEquippedReinforcedStatus(mainEq);
     // 1.1.2 特殊コア
     const coreStatus = coreEffectUtils.calcCoreEffect(mainEq);
     // 1.2 サブ装備
     // 1.2.1 サブ装備のステータスを加算
-    const subRowStatus = calcEquippedStatus.calcRowSubStatus(subEq);
-    const reinforceSubStatus = reinforceUtils.calcReinforceTotalStatus(subEq);
+    const subReinforcedStatus = calcEquippedStatus.calcSubEquippedReinforcedStatus(subEq);
     // 1.3 セット効果の適用
     const comboStatus = comboEffectUtils.calcComboEffectFromEquipped(EquipmentDTO.convertEquippedToEquipmentInstances(mainEq));
 
@@ -157,26 +155,25 @@ export function calculateStats(combination: {main: Equipped, sub: Equipped}, cha
     const equippedEffects = equippedEffectUtils.getEquippedEffect(
         EquipmentDTO.convertEquippedToEquipmentInstances(mainEq)
     );
-
-    const mainStatus = calcTotalStatus.addTotalStatus(mainRowStatus, reinforceMainStatus);
-    const subStatus = calcTotalStatus.addTotalStatus(subRowStatus, reinforceSubStatus);
     const equippedStatus = equippedEffectUtils.calcEquippedEffect(
         equippedEffects,
-        mainStatus,
-        subStatus,
+        mainReinforcedStatus,
+        subReinforcedStatus,
         comboStatus,
         characterStatus,
         avatarStatus,
         coreStatus
     );
+
     // 最終的なステータスを計算
     const totalStatus = calcTotalStatus.addMultipleTotalStatus(
         EquipmentDTO.convertCharacterStatusToTotalStatus(characterStatus),
         EquipmentDTO.convertAvatarStatusToTotalStatus(avatarStatus),
-        mainStatus,
-        subStatus,
+        mainReinforcedStatus,
+        subReinforcedStatus,
         equippedStatus,
-        comboStatus
+        comboStatus,
+        coreStatus
     );
     return calcViewStatus.applyExtendedStatus(totalStatus);
 }

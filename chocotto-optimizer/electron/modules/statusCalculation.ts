@@ -174,6 +174,58 @@ export const calcEquippedStatus = {
       calcEquippedStatus.calcRowMainStatus(mainEquipped);
     return calcTotalStatus.addTotalStatus(rowSubStatus, rowMainStatus);
   },
+  /**
+   * メイン装備の錬成強化ステータスを含んだ合計ステータスを計算する
+   * @param equipped メイン装備
+   * @returns
+   */
+  calcMainEquippedReinforcedStatus: (equipped: Equipped): TotalStatus => {
+    const mainReinforcedStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
+    for (const category in equipped) {
+      const equippedItem: EquipmentInstance = equipped[category as keyof Equipped];
+      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatus(equippedItem.reinforce, category as Category);
+      if (equippedItem) {
+        mainReinforcedStatus.pow += equippedItem.pow;
+        mainReinforcedStatus.int += equippedItem.int;
+        mainReinforcedStatus.vit += equippedItem.vit;
+        mainReinforcedStatus.spd += equippedItem.spd;
+        mainReinforcedStatus.luk += equippedItem.luk;
+        mainReinforcedStatus.hp += equippedItem.hp;
+        mainReinforcedStatus.sp += equippedItem.sp;
+        mainReinforcedStatus.atk += equippedItem.atk + reinforcedStatus.atk;
+        mainReinforcedStatus.def += equippedItem.def + reinforcedStatus.def;
+        mainReinforcedStatus.mat += equippedItem.mat + reinforcedStatus.mat;
+        mainReinforcedStatus.mdf += equippedItem.mdf + reinforcedStatus.mdf;
+      }
+    }
+    return mainReinforcedStatus;
+  },
+  /**
+   * サブ装備の錬成強化ステータスを含んだ合計ステータスを計算する
+   * @param equipped サブ装備
+   * @returns
+   */
+  calcSubEquippedReinforcedStatus: (equipped: Equipped): TotalStatus => {
+    const subReinforcedStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
+    for (const category in equipped) {
+      const equippedItem: EquipmentInstance = equipped[category as keyof Equipped];
+      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatus(equippedItem.reinforce, category as Category);
+      if (equippedItem) {
+        subReinforcedStatus.pow += Math.ceil(equippedItem.pow * 0.5);
+        subReinforcedStatus.int += Math.ceil(equippedItem.int * 0.5);
+        subReinforcedStatus.vit += Math.ceil(equippedItem.vit * 0.5);
+        subReinforcedStatus.spd += Math.ceil(equippedItem.spd * 0.5);
+        subReinforcedStatus.luk += Math.ceil(equippedItem.luk * 0.5);
+        subReinforcedStatus.hp += Math.ceil(equippedItem.hp * 0.5);
+        subReinforcedStatus.sp += Math.ceil(equippedItem.sp * 0.5);
+        subReinforcedStatus.atk += Math.ceil((equippedItem.atk + reinforcedStatus.atk) * 0.5);
+        subReinforcedStatus.def += Math.ceil((equippedItem.def + reinforcedStatus.def) * 0.5);
+        subReinforcedStatus.mat += Math.ceil((equippedItem.mat + reinforcedStatus.mat) * 0.5);
+        subReinforcedStatus.mdf += Math.ceil((equippedItem.mdf + reinforcedStatus.mdf) * 0.5);
+      }
+    }
+    return subReinforcedStatus;
+  },
 };
 
 export const comboEffectUtils = {

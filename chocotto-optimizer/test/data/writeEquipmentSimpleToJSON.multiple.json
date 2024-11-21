@@ -2,10 +2,7 @@
   {
     "id": "7da9fdcf-befa-4f68-a26c-c4225a5f325d",
     "name": "銅の剣",
-    "reinforce": {
-      "lv": 11,
-      "type": "物理"
-    },
+    "reinforceLevel": 11,
     "core": {
       "1": {
         "pow": 1
@@ -21,10 +18,7 @@
   {
     "id": "7da9fdcf-befa-4f68-a26c-c4225a5f325z",
     "name": "銅の盾",
-    "reinforce": {
-      "lv": 0,
-      "type": "物理"
-    },
+    "reinforceLevel": 0,
     "core": {
       "1": {
         "pow": 1

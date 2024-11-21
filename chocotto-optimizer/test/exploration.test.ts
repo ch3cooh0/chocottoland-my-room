@@ -51,7 +51,6 @@ describe("generateCombinations", () => {
     });
 
     it("pow:装備効果2", () => {
-        console.log("pow:装備効果2");
         const equipmentList: EquipmentInstance[] = [
             { ...首.天藍玉フォルティス, uuid: "首1", reinforce: { lv: 0, type: '物理' }, core: {1: {}, 2: {}, 3: {}}, category: "首" },
             { ...首["16thフォースネック・兵"], uuid: "首2", reinforce: { lv: 0, type: '物理' }, core: {1: {}, 2: {}, 3: {}}, category: "首" },
@@ -122,6 +121,6 @@ describe("generateCombinations", async () => {
         const characterStatus: CharacterStatus = ZeroStatus.zeroCharacterStatus()
         const avatarStatus: AvatarStatus = ZeroStatus.zeroAvatarStatus()
         const result = generateSingleCombinations(equipmentList, characterStatus, avatarStatus,"pow", 1);
-        console.log(result);
+        expect(result.length).toBe(1);
     });
 });
