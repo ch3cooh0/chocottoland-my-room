@@ -184,7 +184,7 @@ export const calcEquippedStatus = {
     const mainReinforcedStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     for (const category in equipped) {
       const equippedItem: EquipmentInstance = equipped[category as keyof Equipped];
-      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatus(equippedItem.reinforce, category as Category);
+      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatusEquipmentInstance(equippedItem);
       if (equippedItem) {
         mainReinforcedStatus.pow += equippedItem.pow;
         mainReinforcedStatus.int += equippedItem.int;
@@ -210,7 +210,7 @@ export const calcEquippedStatus = {
     const subReinforcedStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     for (const category in equipped) {
       const equippedItem: EquipmentInstance = equipped[category as keyof Equipped];
-      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatus(equippedItem.reinforce, category as Category);
+      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatusEquipmentInstance(equippedItem);
       if (equippedItem) {
         subReinforcedStatus.pow += Math.ceil(equippedItem.pow * 0.5);
         subReinforcedStatus.int += Math.ceil(equippedItem.int * 0.5);
@@ -792,6 +792,13 @@ export const reinforceUtils = {
           mdf: reinforceUtils.calcReinforceEffect(reinforce, category),
         }
       }
+    }else{
+      return ZeroStatus.zeroTotalStatus();
+    }
+  },
+  calcReinforceStatusEquipmentInstance: (equipment: EquipmentInstance): TotalStatus => {
+    if(equipment && equipment.reinforce){
+      return reinforceUtils.calcReinforceStatus(equipment.reinforce, equipment.category as Category);
     }else{
       return ZeroStatus.zeroTotalStatus();
     }
