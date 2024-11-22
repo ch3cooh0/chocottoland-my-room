@@ -11,11 +11,13 @@ import {
   Reinforce,
   Category,
   StatusKey,
+  Equipment,
 } from "../../types/types";
 import {
   loadComboEquipmentFromCSV,
   loadComboStatusFromCSV,
   loadEquippedEffectFromCSV,
+  loadEquipmentFromCSV,
 } from "./loader";
 import { EquipmentDTO } from "./dto";
 import { ZeroStatus } from "./utiles";
@@ -24,6 +26,7 @@ const cache = {
   equippedEffects: [] as EquippedEffect[],
   comboEquipments: [] as ComboEquipment[],
   comboStatuses: [] as ComboStatus[],
+  equipmentMaster: [] as Equipment[],
 };
 
 export const loadCache = async () => {
@@ -36,6 +39,17 @@ export const loadCache = async () => {
   cache.comboStatuses = await loadComboStatusFromCSV(
     "./data/combo_statuses.csv"
   );
+  cache.equipmentMaster = await loadEquipmentFromCSV(
+    "./data/equipments.csv"
+  );
+};
+
+export const DAO = {
+  equipmentDAO: {
+    searchEquipment: (id: string) => {
+      return cache.equipmentMaster.find((equipment) => equipment.id === id);
+    }
+  }
 };
 
 

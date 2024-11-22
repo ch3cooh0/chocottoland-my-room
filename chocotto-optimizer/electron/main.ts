@@ -30,6 +30,7 @@ import {
   equippedEffectUtils,
   loadCache,
   calcViewStatus,
+  DAO,
 } from "./modules/statusCalculation";
 import { generateSingleCombinations } from "./modules/exploration";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -325,9 +326,24 @@ ipcMain.handle(
       comboStatus,
       coreStatus
     );
+
+    const viewComboEffectInfos = comboInfos.map((comboInfo) => {
+      return {
+        equipmentNames: comboInfo.comboEquipment.map((equipment) => DAO.equipmentDAO.searchEquipment(equipment.equipment_id)?.name),
+        comboText: comboInfo.comboStatus.text,
+        comboStatus: comboInfo.comboStatus,
+      };
+    });
+    const viewEffectInfos = equippedEffects.map((effect) => {
+      return {
+        equipmentName: DAO.equipmentDAO.searchEquipment(effect.equipment_id)?.name,
+        effectText: effect.text,
+      };
+    });
     return {
       totalStatus: calcViewStatus.applyExtendedStatus(totalStatus),
-      setTexts: comboInfos.map((comboInfo) => comboInfo.comboStatus.text),
+      viewComboEffectInfos: viewComboEffectInfos,
+      viewEffectInfos: viewEffectInfos,
     };
   }
 );

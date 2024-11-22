@@ -370,3 +370,35 @@
 .set-effect-item:hover {
   background-color: #c8e6c9; /* ホバー時の背景色を調整 */
 }
+
+.effect-view {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #fff3e0; /* 背景色を調整 */
+  border-radius: 8px; /* 角を丸くする */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影を追加 */
+}
+
+.effect-title {
+  font-size: 1.5rem;
+  color: #f57c00; /* タイトルの色を調整 */
+  margin-bottom: 10px;
+}
+
+.effect-list {
+  list-style-type: none; /* リストのスタイルを削除 */
+  padding: 0;
+}
+
+.effect-item {
+  padding: 5px;
+  background-color: #ffe0b2; /* 背景色を調整 */
+  border: 1px solid #ffcc80; /* 枠線を追加 */
+  border-radius: 4px; /* 角を丸くする */
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease; /* 背景色の変化をスムーズにする */
+}
+
+.effect-item:hover {
+  background-color: #ffcc80; /* ホバー時の背景色を調整 */
+}

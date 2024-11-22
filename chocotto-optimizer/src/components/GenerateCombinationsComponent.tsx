@@ -35,7 +35,6 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
             
             setCombinations(result);
         } catch (error) {
-            // console.error("Error generating combinations:", error);
             toast.error("組み合わせの生成中にエラーが発生しました");
         } finally {
             setIsGenerating(false);
@@ -69,7 +68,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
             </div>
             <button onClick={handleGenerate} disabled={isGenerating}>生成</button>
             {isGenerating && <p>生成中...</p>}
-            <div>
+            {/* <div>
                 <h3>生成された組み合わせ</h3>
                 <ul>
                     {combinations.map((combination, index) => (
@@ -79,7 +78,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
                         </li>
                     ))}
                 </ul>
-            </div>
+            </div> */}
         </div>
     );
 };
