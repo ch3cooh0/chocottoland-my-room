@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { EquipmentInstance, CharacterStatus, AvatarStatus, Equipped } from "../../types/types";
-import { CombinationResult } from "../../electron/modules/exploration";
+// import { CombinationResult } from "../../electron/modules/exploration";
 import { toast } from 'react-hot-toast';
 
 interface GenerateCombinationsComponentProps {
@@ -14,7 +14,7 @@ interface GenerateCombinationsComponentProps {
 const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps> = ({ equipmentInstances, characterStatus, avatarStatus, setCharacterMainEquipment, setCharacterSubEquipment }) => {
     const [selectedStat, setSelectedStat] = useState<string>("pow");
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
-    const [combinations, setCombinations] = useState<CombinationResult[]>([]);
+    // const [combinations, setCombinations] = useState<CombinationResult[]>([]);
 
     const handleGenerate = async () => {
         setIsGenerating(true);
