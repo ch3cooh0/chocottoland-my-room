@@ -10,6 +10,7 @@ import {
   ComboInfo,
   Reinforce,
   Category,
+  StatusKey,
 } from "../../types/types";
 import {
   loadComboEquipmentFromCSV,
@@ -230,6 +231,13 @@ export const calcEquippedStatus = {
 
 export const comboEffectUtils = {
 
+  searchComboEquipmentWhereEquipmentId: (equipmentIds: string): ComboEquipment[] => {
+    return cache.comboEquipments.filter((combo) => equipmentIds.includes(combo.equipment_id));
+  },
+  searchComboStatus: (comboId: string): ComboStatus | undefined => {
+    return cache.comboStatuses.find((status) => status.combo_id === comboId);
+  },
+
   /**
    * EquipmentInstance[]から有効なセット効果（コンボ効果）を計算する。
    * @param equippements
@@ -331,6 +339,10 @@ export const equippedEffectUtils = {
     return cache.equippedEffects.filter((effect) =>
       ids.includes(effect.equipment_id)
     );
+  },
+
+  searchEquippedEffectsWhereTargetStatus: (targetStatus: StatusKey): EquippedEffect[] => {
+    return cache.equippedEffects.filter((effect) => effect.target_status === targetStatus);
   },
 
   calcEquippedEffect: (
