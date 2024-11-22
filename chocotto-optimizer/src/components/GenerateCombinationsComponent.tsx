@@ -19,9 +19,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
     const handleGenerate = async () => {
         setIsGenerating(true);
         try {
-            console.log(equipmentInstances);
             const result = await window.ipcRenderer.invoke("generateSingleCombinations", equipmentInstances, characterStatus, avatarStatus, selectedStat, 1);
-            console.log(result);
             if (result.length > 0) {
                 const filteredMainEquipment = Object.fromEntries(
                     Object.entries(result[0].combination.main).filter(([, eq]) => (eq as EquipmentInstance).id !== "")

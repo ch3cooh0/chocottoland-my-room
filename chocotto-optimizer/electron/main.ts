@@ -275,7 +275,7 @@ ipcMain.handle(
     characterStatus: CharacterStatus,
     avatarStatus: AvatarStatus
   ) => {
-    loadCache();
+    await loadCache();
     // メイン装備の錬成強化ステータスを含んだ合計ステータス
     const mainReinforcedStatus = calcEquippedStatus.calcMainEquippedReinforcedStatus(
       characterMainEquipment
@@ -336,6 +336,7 @@ ipcMain.handle(
  * 探索結果生成
  */
 ipcMain.handle("generateSingleCombinations", async (_event, equipmentList, characterStatus, avatarStatus, key, N) => {
+  await loadCache();
   return generateSingleCombinations(equipmentList, characterStatus, avatarStatus, key, N);
 });
 
