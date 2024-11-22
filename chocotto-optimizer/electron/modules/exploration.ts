@@ -1,7 +1,7 @@
 
 import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey } from "../../types/types";
 import { EquipmentDTO } from "./dto";
-import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, reinforceUtils } from "./statusCalculation";
+import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, loadCache, reinforceUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
 
 export interface CombinationResult{
@@ -102,9 +102,7 @@ export const generateTargetEquipmentList = {
         // 装備効果とセット効果を持つ装備を結合
         const effectEquipments = [...effEquipments, ...comboEquipments];
         // uuidをキーにして重複を排除
-        const uniqueEffectEquipments = effectEquipments.filter((eq, index, self) =>
-            index === self.findIndex((t) => t.uuid === eq.uuid)
-        );
+        const uniqueEffectEquipments = Array.from(new Map(effectEquipments.map(item => [item.uuid, item])).values());
         return uniqueEffectEquipments;
     },
     /**
@@ -119,12 +117,10 @@ export const generateTargetEquipmentList = {
     mainEquipmentList: (equipmentList: EquipmentInstance[], part: Category, key: StatusKey, N: number): EquipmentInstance[] => {
         const filteredList = generateTargetEquipmentList.filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key, "main");
         const effectEquipments = generateTargetEquipmentList.searchEffectEquippments(filteredList, key);
-        const combinedEquipments = [...filteredList, ...effectEquipments];
-        // uuidをキーにして重複を排除
-        const uniqueCombinedEquipments = combinedEquipments.filter((eq, index, self) =>
-            index === self.findIndex((t) => t.uuid === eq.uuid)
-        );
-        return uniqueCombinedEquipments.slice(0, N);
+        const combinedEquipments = [...filteredList.slice(0, N), ...effectEquipments];
+        // uuidが重複している要素を取り除く
+        const uniqueCombinedEquipments = Array.from(new Map(combinedEquipments.map(item => [item.uuid, item])).values());
+        return uniqueCombinedEquipments;
     },
     /**
      * 指定された部位の装備を、指定されたステータスキーの降順でソートして、上位N件に絞る。
@@ -151,11 +147,14 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
     const subEquipments: { [key in Category]: EquipmentInstance[] } = {
         "武器": [], "頭": [], "服": [], "首": [], "手": [], "盾": [], "背": [], "靴": []
     };
+    loadCache();
     parts.forEach((part) => {
         // 装備候補数を制限
         mainEquipments[part] = generateTargetEquipmentList.mainEquipmentList(equipmentList, part, key, N);
         subEquipments[part] = generateTargetEquipmentList.subEquipmentList(equipmentList, part, key, N);
     });
+    // console.log(mainEquipments["手"]);
+    // console.log(subEquipments["武器"]);
     // 組み合わせの総数が膨大になる可能性があるため、上位N件のみを保持
     const combinations: CombinationResult[] = [];
     const maxResults = N;
