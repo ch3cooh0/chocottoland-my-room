@@ -200,10 +200,30 @@ export interface ComboStatus {
     text: string;
 }
 
+/**
+ * 発動しているセット効果とその対象となった装備
+ */
 export interface ComboInfo {
     comboEquipment: ComboEquipment[];
     comboStatus: ComboStatus;
 }
+
+/**
+ * フロントに渡すための装備効果情報
+ */
+export interface ViewEffectInfo {
+    equipmentName: string;
+    effectText: string;
+}
+/**
+ * フロントに渡すためのセット効果情報
+ */
+export interface ViewComboEffectInfo {
+    equipmentNames: string[];
+    comboText: string;
+    comboStatus: ComboStatus;
+}
+
 
 /**
  * マネキンのデータを表す型

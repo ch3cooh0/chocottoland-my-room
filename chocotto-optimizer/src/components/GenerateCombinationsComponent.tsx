@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { EquipmentInstance, CharacterStatus, AvatarStatus, Equipped } from "../../types/types";
-import { CombinationResult } from "../../electron/modules/exploration";
+// import { CombinationResult } from "../../electron/modules/exploration";
 import { toast } from 'react-hot-toast';
 
 interface GenerateCombinationsComponentProps {
@@ -14,7 +14,7 @@ interface GenerateCombinationsComponentProps {
 const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps> = ({ equipmentInstances, characterStatus, avatarStatus, setCharacterMainEquipment, setCharacterSubEquipment }) => {
     const [selectedStat, setSelectedStat] = useState<string>("pow");
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
-    const [combinations, setCombinations] = useState<CombinationResult[]>([]);
+    // const [combinations, setCombinations] = useState<CombinationResult[]>([]);
 
     const handleGenerate = async () => {
         setIsGenerating(true);
@@ -33,9 +33,8 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
                 toast.error("組み合わせの生成に失敗しました");
             }
             
-            setCombinations(result);
+            // setCombinations(result);
         } catch (error) {
-            // console.error("Error generating combinations:", error);
             toast.error("組み合わせの生成中にエラーが発生しました");
         } finally {
             setIsGenerating(false);
@@ -69,7 +68,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
             </div>
             <button onClick={handleGenerate} disabled={isGenerating}>生成</button>
             {isGenerating && <p>生成中...</p>}
-            <div>
+            {/* <div>
                 <h3>生成された組み合わせ</h3>
                 <ul>
                     {combinations.map((combination, index) => (
@@ -79,7 +78,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
                         </li>
                     ))}
                 </ul>
-            </div>
+            </div> */}
         </div>
     );
 };

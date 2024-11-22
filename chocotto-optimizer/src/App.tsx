@@ -7,6 +7,8 @@ import {
   EquipmentSimple,
   Equipped,
   TotalStatus,
+  ViewComboEffectInfo,
+  ViewEffectInfo,
 } from "../types/types";
 import { ZeroStatus } from "../electron/modules/utiles";
 import WarehouseComponent from "./components/WarehouseComponent";
@@ -16,6 +18,7 @@ import CharacterEquippedComponent from "./components/CharacterEquippedComponent"
 import StatusComponent from "./components/StatusComponent";
 import SetEffectViewComponent from "./components/SetEffectViewComponent";
 import GenerateCombinationsComponent from "./components/GenerateCombinationsComponent";
+import EffectViewComponent from "./components/EffectViewComponent";
 function App() {
   /**
    * 倉庫関連
@@ -76,13 +79,14 @@ function App() {
    * 計算後のステータス
    */
   const [totalStatus, setTotalStatus] = useState<TotalStatus>(ZeroStatus.zeroTotalStatus());
-  const [comboTexts, setComboTexts] = useState<string[]>(["なし"]);
-
+  const [viewComboEffectInfos, setViewComboEffectInfos] = useState<ViewComboEffectInfo[]>([]);
+  const [viewEffectInfos, setViewEffectInfos] = useState<ViewEffectInfo[]>([]);
   useEffect(() => {
     const calcTotalStatus = async () => {
-      const {totalStatus, setText} = await window.ipcRenderer.invoke('calcTotalStatus', characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus);
+      const {totalStatus, viewComboEffectInfos, viewEffectInfos} = await window.ipcRenderer.invoke('calcTotalStatus', characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus);
       setTotalStatus(totalStatus);
-      setComboTexts(setText);
+      setViewComboEffectInfos(viewComboEffectInfos);
+      setViewEffectInfos(viewEffectInfos);
     };
     calcTotalStatus();
   }, [characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus]);
@@ -114,7 +118,8 @@ function App() {
         saveMannequin={saveMannequin}
       />
       <StatusComponent totalStatus={totalStatus} />
-      <SetEffectViewComponent comboTexts={comboTexts} />
+      <SetEffectViewComponent viewComboEffectInfos={viewComboEffectInfos} />
+      <EffectViewComponent viewEffectInfos={viewEffectInfos} />
       <GenerateCombinationsComponent
         equipmentInstances={equipmentInstances}
         characterStatus={characterStatus}
