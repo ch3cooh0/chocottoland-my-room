@@ -27,15 +27,15 @@ jobs:
     - name: Install dependencies
       shell: pwsh
       run: |
-        npm install -g pnpm
+        npm install
         cd chocotto-optimizer
-        pnpm install
+        npm install
 
     - name: Build project
       shell: pwsh
       run: |
         cd chocotto-optimizer
-        pnpm run build
+        npm run build
       continue-on-error: true
 
     - name: Create Release
@@ -51,8 +51,7 @@ jobs:
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./chocotto-optimizer/release
         asset_name: chocotto-optimizer-win32-ia32.zip
