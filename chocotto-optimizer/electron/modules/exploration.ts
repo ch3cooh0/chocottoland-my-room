@@ -1,7 +1,7 @@
 
 import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey, EquippedEffect } from "../../types/types";
 import { EquipmentDTO } from "./dto";
-import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, loadCache, reinforceUtils } from "./statusCalculation";
+import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, reinforceUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
 
 export interface CombinationResult{
