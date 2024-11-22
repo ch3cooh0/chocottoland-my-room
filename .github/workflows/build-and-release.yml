@@ -28,14 +28,6 @@ jobs:
         cd chocotto-optimizer
         npm run build
 
-    - name: Cache pnpm store
-      uses: actions/cache@v3
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-
-
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
