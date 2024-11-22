@@ -210,7 +210,6 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
     const subEquipments: { [key in Category]: EquipmentInstance[] } = {
         "武器": [], "頭": [], "服": [], "首": [], "手": [], "盾": [], "背": [], "靴": []
     };
-    loadCache();
     parts.forEach((part) => {
         // 装備候補数を制限
         mainEquipments[part] = generateTargetEquipmentList.mainEquipmentList(equipmentList, part, key, N);
