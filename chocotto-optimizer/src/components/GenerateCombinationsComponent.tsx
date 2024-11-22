@@ -33,7 +33,7 @@ const GenerateCombinationsComponent: React.FC<GenerateCombinationsComponentProps
                 toast.error("組み合わせの生成に失敗しました");
             }
             
-            setCombinations(result);
+            // setCombinations(result);
         } catch (error) {
             toast.error("組み合わせの生成中にエラーが発生しました");
         } finally {
