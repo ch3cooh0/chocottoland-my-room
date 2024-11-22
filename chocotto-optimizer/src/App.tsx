@@ -80,9 +80,9 @@ function App() {
 
   useEffect(() => {
     const calcTotalStatus = async () => {
-      const {totalStatus, setText} = await window.ipcRenderer.invoke('calcTotalStatus', characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus);
+      const {totalStatus, setTexts} = await window.ipcRenderer.invoke('calcTotalStatus', characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus);
       setTotalStatus(totalStatus);
-      setComboTexts(setText);
+      setComboTexts(setTexts);
     };
     calcTotalStatus();
   }, [characterMainEquipment, characterSubEquipment, characterStatus, avatarStatus]);
