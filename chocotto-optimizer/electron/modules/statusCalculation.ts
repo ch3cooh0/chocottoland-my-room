@@ -230,10 +230,19 @@ export const calcEquippedStatus = {
 };
 
 export const comboEffectUtils = {
-
+  /**
+   * 指定された装備Idのセット効果を返す
+   * @param equipmentIds 装備Idの配列
+   * @returns 指定された装備Idのセット効果
+   */
   searchComboEquipmentWhereEquipmentId: (equipmentIds: string): ComboEquipment[] => {
     return cache.comboEquipments.filter((combo) => equipmentIds.includes(combo.equipment_id));
   },
+  /**
+   * 指定されたセット効果Idのセット効果を返す
+   * @param comboId セット効果Id
+   * @returns 指定されたセット効果Idのセット効果
+   */
   searchComboStatus: (comboId: string): ComboStatus | undefined => {
     return cache.comboStatuses.find((status) => status.combo_id === comboId);
   },
@@ -340,9 +349,21 @@ export const equippedEffectUtils = {
       ids.includes(effect.equipment_id)
     );
   },
-
+  /**
+   * 指定されたステータスキーの装備効果を返す
+   * @param targetStatus ステータスキー
+   * @returns 指定されたステータスキーの装備効果
+   */
   searchEquippedEffectsWhereTargetStatus: (targetStatus: StatusKey): EquippedEffect[] => {
     return cache.equippedEffects.filter((effect) => effect.target_status === targetStatus);
+  },
+  /**
+   * 指定されたステータスキーの装備効果を返す
+   * @param targetStatuses ステータスキーの配列
+   * @returns 指定されたステータスキーの装備効果
+   */
+  searchEquippedEffectsWhereTargetStatuses: (targetStatuses: StatusKey[]): EquippedEffect[] => {
+    return cache.equippedEffects.filter((effect) => targetStatuses.includes(effect.target_status as StatusKey));
   },
 
   calcEquippedEffect: (

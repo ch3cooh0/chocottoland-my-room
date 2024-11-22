@@ -1,5 +1,5 @@
 
-import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey } from "../../types/types";
+import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey, EquippedEffect } from "../../types/types";
 import { EquipmentDTO } from "./dto";
 import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, loadCache, reinforceUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
@@ -84,16 +84,71 @@ export const generateTargetEquipmentList = {
     },
 
     /**
+     * 指定されたステータスキーの装備効果を返す.(ATK,DEF,MAT,MDFはpow,intが増加する効果も含む)
+     * @param targetStatus ステータスキー
+     * @returns 指定されたステータスキーの装備効果
+     */
+    searchEquippedEffectByTargetStatus: (targetStatus: StatusKey): EquippedEffect[] => {
+        switch(targetStatus){
+            case "atk":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["atk", "pow"]);
+            case "def":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["def", "vit"]);
+            case "mat":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["mat", "int"]);
+            case "mdf":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["mdf", "int"]);
+            default:
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatus(targetStatus);
+        }
+    },
+    /**
+     * 指定されたステータスキーの装備効果を持つ装備を返す(ATK,DEF,MAT,MDFはpow,intが増加する効果も含む)
+     * @param equipmentList 装備リスト
+     * @param targetStatus ステータスキー
+     * @returns 指定されたステータスキーの装備効果を持つ装備
+     */
+    filterHaveEffectEquipmentByTargetStatus: (equipmentList: EquipmentInstance[], targetStatus: StatusKey): EquipmentInstance[] => {
+        const effects = generateTargetEquipmentList.searchEquippedEffectByTargetStatus(targetStatus);
+        return equipmentList.filter((eq) => effects.some((effect) => effect.equipment_id === eq.id));
+    },
+
+    /**
+     * 指定されたステータスキーのセット効果を持つ装備を返す(ATK,DEF,MAT,MDFはpow,intが増加する効果も含む)
+     * @param equipmentList 装備リスト
+     * @param targetStatus ステータスキー
+     * @returns 指定されたステータスキーのセット効果を持つ装備
+     */
+    filterHaveComboEffectEquipmentByTargetStatus: (equipmentList: EquipmentInstance[], targetStatus: StatusKey): EquipmentInstance[] => {
+        return equipmentList.filter((eq) => 
+            comboEffectUtils.searchComboEquipmentWhereEquipmentId(eq.id).map(
+                (combo) => comboEffectUtils.searchComboStatus(combo.combo_id)).some(
+                    (status) => {
+                        switch(targetStatus){
+                            case "atk":
+                                return status && (status.atk !== 0 || status.pow !== 0);
+                            case "def":
+                                return status && (status.def !== 0 || status.vit !== 0);
+                            case "mat":
+                                return status && (status.mat !== 0 || status.int !== 0);
+                            case "mdf":
+                                return status && (status.mdf !== 0 || status.int !== 0);
+                            default:
+                                return status && status[targetStatus] !== 0;
+                        }
+                    }
+                ));
+    },
+
+    /**
      * 指定されたステータスキーの装備効果/セット効果を持つ装備を返す
      * @param equipmentList 装備リスト
      * @param key ステータスキー
      * @returns 指定されたステータスキーの装備効果/セット効果を持つ装備
      */
     searchEffectEquippments: (equipmentList: EquipmentInstance[], key: StatusKey): EquipmentInstance[] => {
-        // Keyステータス上昇効果を持つ装備効果一覧
-        const equippedEffects = equippedEffectUtils.searchEquippedEffectsWhereTargetStatus(key);
         // 装備効果を持つ装備のみに絞り込み
-        const effEquipments = equipmentList.filter((eq) => equippedEffects.some((effect) => effect.equipment_id === eq.id));
+        const effEquipments = generateTargetEquipmentList.filterHaveEffectEquipmentByTargetStatus(equipmentList, key);
         // セット効果を持つ装備のみに絞り込み
         const comboEquipments = equipmentList.filter((eq) => 
             comboEffectUtils.searchComboEquipmentWhereEquipmentId(eq.id).map(
@@ -138,7 +193,15 @@ export const generateTargetEquipmentList = {
 }
 
 
-
+/**
+ * 装備の組み合わせを生成する
+ * @param equipmentList 装備リスト
+ * @param characterStatus キャラクターステータス
+ * @param avatarStatus アバターステータス
+ * @param key ステータスキー
+ * @param N 上位N件
+ * @returns 装備の組み合わせ
+ */
 export function generateSingleCombinations(equipmentList: EquipmentInstance[], characterStatus: CharacterStatus, avatarStatus: AvatarStatus, key: StatusKey, N: number): CombinationResult[] {
     const parts: Category[] = ["武器", "頭", "服", "首", "手", "盾", "背", "靴"];
     const mainEquipments: { [key in Category]: EquipmentInstance[] } = {
