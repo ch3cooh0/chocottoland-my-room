@@ -26,7 +26,7 @@ jobs:
     - name: Build project for Windows
       run: |
         cd chocotto-optimizer
-        npm run build -- --platform=win32 --arch=ia32
+        npm run build
 
     - name: Cache pnpm store
       uses: actions/cache@v3
