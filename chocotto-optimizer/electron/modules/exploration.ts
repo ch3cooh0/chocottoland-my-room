@@ -1,7 +1,7 @@
 
-import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey } from "../../types/types";
+import { Equipped, EquipmentInstance, Category, TotalStatus, AvatarStatus, CharacterStatus, StatusKey, EquippedEffect } from "../../types/types";
 import { EquipmentDTO } from "./dto";
-import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils } from "./statusCalculation";
+import { calcEquippedStatus, calcTotalStatus, calcViewStatus, comboEffectUtils, coreEffectUtils, equippedEffectUtils, loadCache, reinforceUtils } from "./statusCalculation";
 import { ZeroStatus } from "./utiles";
 
 export interface CombinationResult{
@@ -9,22 +9,6 @@ export interface CombinationResult{
     totalStats: TotalStatus;
 }
 
-/**
- * 指定された部位の装備を、指定されたステータスキーの降順でソートして返す
- * @param equipmentList 装備リスト
- * @param category 部位
- * @param key ステータスキー
- * @returns 指定された部位の装備を、指定されたステータスキーの降順でソートした装備リスト
- */
-export function filterEquipmentListByCategoryOrderedDesc(
-    equipmentList: EquipmentInstance[], 
-    category: Category, 
-    key: StatusKey
-): EquipmentInstance[] {
-    return equipmentList
-        .filter((eq) => eq.category === category)
-        .sort((a, b) => getTotalStat(b, key) - getTotalStat(a, key));
-}
 
 // 比較関数を定義
 function compareByKeyDesc(key: StatusKey) {
@@ -35,18 +19,189 @@ function compareByKeyDesc(key: StatusKey) {
     };
 }
 
-function getTotalStat(equipment: EquipmentInstance, key: StatusKey): number {
-    let total = equipment[key] || 0;
-    if (equipment.core) {
-        for (const slot of Object.values(equipment.core)) {
-            if (slot && slot[key]) {
-                total += slot[key];
+export const generateTargetEquipmentList = {
+    /**
+     * 装備のステータスを計算(コア上昇量を除く)
+     * @param equipment 装備
+     * @param key ステータスキー
+     * @returns 装備のステータス(コア上昇量を除く)
+     */
+    calcKeyStatus: (equipment: EquipmentInstance, key: StatusKey): number => {
+        const reinforceStatus = reinforceUtils.calcReinforceStatus(equipment.reinforce, equipment.category);
+        switch(key){
+            case "atk":
+                return equipment.atk + equipment.pow * 3 + reinforceStatus.atk;
+            case "def":
+                return equipment.def + equipment.vit * 2 + reinforceStatus.def;
+            case "mat":
+                return equipment.mat + equipment.int * 2 + reinforceStatus.mat;
+            case "mdf":
+                return equipment.mdf + equipment.luk * 15 + reinforceStatus.mdf;
+            default:
+                return equipment[key] || 0;
+        }
+    },
+    /**
+     * 装備のステータスを計算(コア上昇量を含む)
+     * @param equipment 装備
+     * @param key ステータスキー
+     * @returns 装備のステータス(コア上昇量を含む)
+     */
+    calcKeyStatusWithCore: (equipment: EquipmentInstance, key: StatusKey): number => {
+        let total = generateTargetEquipmentList.calcKeyStatus(equipment, key);
+        if (equipment.core) {
+            for (const slot of Object.values(equipment.core)) {
+                if (slot && slot[key]) {
+                    total += slot[key];
+                }
             }
         }
+        return total;
+    },
+    /**
+     * 指定された部位の装備を、指定されたステータスキーの降順でソートして返す
+     * @param equipmentList 装備リスト
+     * @param category 部位
+     * @param key ステータスキー
+     * @param mode "main" | "sub"
+     * @returns 指定された部位の装備を、指定されたステータスキーの降順でソートした装備リスト
+     */
+    filterEquipmentListByCategoryOrderedDesc(
+        equipmentList: EquipmentInstance[], 
+        category: Category, 
+        key: StatusKey,
+        mode: "main" | "sub"
+    ): EquipmentInstance[] {
+        if(mode === "main"){
+            return equipmentList
+                .filter((eq) => eq.category === category)
+                .sort((a, b) => generateTargetEquipmentList.calcKeyStatusWithCore(b, key) - generateTargetEquipmentList.calcKeyStatusWithCore(a, key));
+        } else {
+            return equipmentList
+                .filter((eq) => eq.category === category)
+                .sort((a, b) => generateTargetEquipmentList.calcKeyStatusWithCore(b, key) - generateTargetEquipmentList.calcKeyStatus(a, key));
+        }
+    },
+
+    /**
+     * 指定されたステータスキーの装備効果を返す.(ATK,DEF,MAT,MDFはpow,intが増加する効果も含む)
+     * @param targetStatus ステータスキー
+     * @returns 指定されたステータスキーの装備効果
+     */
+    searchEquippedEffectByTargetStatus: (targetStatus: StatusKey): EquippedEffect[] => {
+        switch(targetStatus){
+            case "atk":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["atk", "pow"]);
+            case "def":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["def", "vit"]);
+            case "mat":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["mat", "int"]);
+            case "mdf":
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatuses(["mdf", "int"]);
+            default:
+                return equippedEffectUtils.searchEquippedEffectsWhereTargetStatus(targetStatus);
+        }
+    },
+    /**
+     * 指定されたステータスキーの装備効果を持つ装備を返す(ATK,DEF,MAT,MDFはpow,intが増加する効果も含む)
+     * @param equipmentList 装備リスト
+     * @param targetStatus ステータスキー
+     * @returns 指定されたステータスキーの装備効果を持つ装備
+     */
+    filterHaveEffectEquipmentByTargetStatus: (equipmentList: EquipmentInstance[], targetStatus: StatusKey): EquipmentInstance[] => {
+        const effects = generateTargetEquipmentList.searchEquippedEffectByTargetStatus(targetStatus);
+        return equipmentList.filter((eq) => effects.some((effect) => effect.equipment_id === eq.id));
+    },
+
+    /**
+     * 指定されたステータスキーのセット効果を持つ装備を返す(ATK,DEF,MAT,MDFはpow,intが増加する効果も含む)
+     * @param equipmentList 装備リスト
+     * @param targetStatus ステータスキー
+     * @returns 指定されたステータスキーのセット効果を持つ装備
+     */
+    filterHaveComboEffectEquipmentByTargetStatus: (equipmentList: EquipmentInstance[], targetStatus: StatusKey): EquipmentInstance[] => {
+        return equipmentList.filter((eq) => 
+            comboEffectUtils.searchComboEquipmentWhereEquipmentId(eq.id).map(
+                (combo) => comboEffectUtils.searchComboStatus(combo.combo_id)).some(
+                    (status) => {
+                        switch(targetStatus){
+                            case "atk":
+                                return status && (status.atk !== 0 || status.pow !== 0);
+                            case "def":
+                                return status && (status.def !== 0 || status.vit !== 0);
+                            case "mat":
+                                return status && (status.mat !== 0 || status.int !== 0);
+                            case "mdf":
+                                return status && (status.mdf !== 0 || status.int !== 0);
+                            default:
+                                return status && status[targetStatus] !== 0;
+                        }
+                    }
+                ));
+    },
+
+    /**
+     * 指定されたステータスキーの装備効果/セット効果を持つ装備を返す
+     * @param equipmentList 装備リスト
+     * @param key ステータスキー
+     * @returns 指定されたステータスキーの装備効果/セット効果を持つ装備
+     */
+    searchEffectEquippments: (equipmentList: EquipmentInstance[], key: StatusKey): EquipmentInstance[] => {
+        // 装備効果を持つ装備のみに絞り込み
+        const effEquipments = generateTargetEquipmentList.filterHaveEffectEquipmentByTargetStatus(equipmentList, key);
+        // セット効果を持つ装備のみに絞り込み
+        const comboEquipments = equipmentList.filter((eq) => 
+            comboEffectUtils.searchComboEquipmentWhereEquipmentId(eq.id).map(
+                (combo) => comboEffectUtils.searchComboStatus(combo.combo_id)).some((status) => status && status[key] !== 0));
+
+        // 装備効果とセット効果を持つ装備を結合
+        const effectEquipments = [...effEquipments, ...comboEquipments];
+        // uuidをキーにして重複を排除
+        const uniqueEffectEquipments = Array.from(new Map(effectEquipments.map(item => [item.uuid, item])).values());
+        return uniqueEffectEquipments;
+    },
+    /**
+     * 指定された部位の装備を、指定されたステータスキーの降順でソートして、上位N件に絞る。その後、装備効果やセット効果を保持する装備を追加して返す。
+     * なお、装備重複はない
+     * @param equipmentList 装備リスト
+     * @param part 部位
+     * @param key ステータスキー
+     * @param N 上位N件
+     * @returns 指定された部位の装備を、指定されたステータスキーの降順でソートした上位N件+装備効果やセット効果を保持する装備
+     */
+    mainEquipmentList: (equipmentList: EquipmentInstance[], part: Category, key: StatusKey, N: number): EquipmentInstance[] => {
+        const filteredList = generateTargetEquipmentList.filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key, "main");
+        const effectEquipments = generateTargetEquipmentList.searchEffectEquippments(filteredList, key);
+        const combinedEquipments = [...filteredList.slice(0, N), ...effectEquipments];
+        // uuidが重複している要素を取り除く
+        const uniqueCombinedEquipments = Array.from(new Map(combinedEquipments.map(item => [item.uuid, item])).values());
+        return uniqueCombinedEquipments;
+    },
+    /**
+     * 指定された部位の装備を、指定されたステータスキーの降順でソートして、上位N件に絞る。
+     * なお、装備重複はない
+     * @param equipmentList 装備リスト
+     * @param part 部位
+     * @param key ステータスキー
+     * @param N 上位N件
+     * @returns 指定された部位の装備を、指定されたステータスキーの降順でソートした上位N件
+     */
+    subEquipmentList: (equipmentList: EquipmentInstance[], part: Category, key: StatusKey, N: number): EquipmentInstance[] => {
+        const filteredList = generateTargetEquipmentList.filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key, "sub");
+        return filteredList.slice(0, N+1);
     }
-    return total;
 }
 
+
+/**
+ * 装備の組み合わせを生成する
+ * @param equipmentList 装備リスト
+ * @param characterStatus キャラクターステータス
+ * @param avatarStatus アバターステータス
+ * @param key ステータスキー
+ * @param N 上位N件
+ * @returns 装備の組み合わせ
+ */
 export function generateSingleCombinations(equipmentList: EquipmentInstance[], characterStatus: CharacterStatus, avatarStatus: AvatarStatus, key: StatusKey, N: number): CombinationResult[] {
     const parts: Category[] = ["武器", "頭", "服", "首", "手", "盾", "背", "靴"];
     const mainEquipments: { [key in Category]: EquipmentInstance[] } = {
@@ -55,10 +210,14 @@ export function generateSingleCombinations(equipmentList: EquipmentInstance[], c
     const subEquipments: { [key in Category]: EquipmentInstance[] } = {
         "武器": [], "頭": [], "服": [], "首": [], "手": [], "盾": [], "背": [], "靴": []
     };
+    loadCache();
     parts.forEach((part) => {
-        mainEquipments[part] = filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key);
-        subEquipments[part] = filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key);
+        // 装備候補数を制限
+        mainEquipments[part] = generateTargetEquipmentList.mainEquipmentList(equipmentList, part, key, N);
+        subEquipments[part] = generateTargetEquipmentList.subEquipmentList(equipmentList, part, key, N);
     });
+    // console.log(mainEquipments["手"]);
+    // console.log(subEquipments["武器"]);
     // 組み合わせの総数が膨大になる可能性があるため、上位N件のみを保持
     const combinations: CombinationResult[] = [];
     const maxResults = N;

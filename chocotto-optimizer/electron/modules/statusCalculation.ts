@@ -10,6 +10,7 @@ import {
   ComboInfo,
   Reinforce,
   Category,
+  StatusKey,
 } from "../../types/types";
 import {
   loadComboEquipmentFromCSV,
@@ -183,7 +184,7 @@ export const calcEquippedStatus = {
     const mainReinforcedStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     for (const category in equipped) {
       const equippedItem: EquipmentInstance = equipped[category as keyof Equipped];
-      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatus(equippedItem.reinforce, category as Category);
+      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatusEquipmentInstance(equippedItem);
       if (equippedItem) {
         mainReinforcedStatus.pow += equippedItem.pow;
         mainReinforcedStatus.int += equippedItem.int;
@@ -209,7 +210,7 @@ export const calcEquippedStatus = {
     const subReinforcedStatus: TotalStatus = ZeroStatus.zeroTotalStatus();
     for (const category in equipped) {
       const equippedItem: EquipmentInstance = equipped[category as keyof Equipped];
-      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatus(equippedItem.reinforce, category as Category);
+      const reinforcedStatus: TotalStatus =reinforceUtils.calcReinforceStatusEquipmentInstance(equippedItem);
       if (equippedItem) {
         subReinforcedStatus.pow += Math.ceil(equippedItem.pow * 0.5);
         subReinforcedStatus.int += Math.ceil(equippedItem.int * 0.5);
@@ -229,6 +230,22 @@ export const calcEquippedStatus = {
 };
 
 export const comboEffectUtils = {
+  /**
+   * 指定された装備Idのセット効果を返す
+   * @param equipmentIds 装備Idの配列
+   * @returns 指定された装備Idのセット効果
+   */
+  searchComboEquipmentWhereEquipmentId: (equipmentIds: string): ComboEquipment[] => {
+    return cache.comboEquipments.filter((combo) => equipmentIds.includes(combo.equipment_id));
+  },
+  /**
+   * 指定されたセット効果Idのセット効果を返す
+   * @param comboId セット効果Id
+   * @returns 指定されたセット効果Idのセット効果
+   */
+  searchComboStatus: (comboId: string): ComboStatus | undefined => {
+    return cache.comboStatuses.find((status) => status.combo_id === comboId);
+  },
 
   /**
    * EquipmentInstance[]から有効なセット効果（コンボ効果）を計算する。
@@ -331,6 +348,22 @@ export const equippedEffectUtils = {
     return cache.equippedEffects.filter((effect) =>
       ids.includes(effect.equipment_id)
     );
+  },
+  /**
+   * 指定されたステータスキーの装備効果を返す
+   * @param targetStatus ステータスキー
+   * @returns 指定されたステータスキーの装備効果
+   */
+  searchEquippedEffectsWhereTargetStatus: (targetStatus: StatusKey): EquippedEffect[] => {
+    return cache.equippedEffects.filter((effect) => effect.target_status === targetStatus);
+  },
+  /**
+   * 指定されたステータスキーの装備効果を返す
+   * @param targetStatuses ステータスキーの配列
+   * @returns 指定されたステータスキーの装備効果
+   */
+  searchEquippedEffectsWhereTargetStatuses: (targetStatuses: StatusKey[]): EquippedEffect[] => {
+    return cache.equippedEffects.filter((effect) => targetStatuses.includes(effect.target_status as StatusKey));
   },
 
   calcEquippedEffect: (
@@ -780,6 +813,13 @@ export const reinforceUtils = {
           mdf: reinforceUtils.calcReinforceEffect(reinforce, category),
         }
       }
+    }else{
+      return ZeroStatus.zeroTotalStatus();
+    }
+  },
+  calcReinforceStatusEquipmentInstance: (equipment: EquipmentInstance): TotalStatus => {
+    if(equipment && equipment.reinforce){
+      return reinforceUtils.calcReinforceStatus(equipment.reinforce, equipment.category as Category);
     }else{
       return ZeroStatus.zeroTotalStatus();
     }
