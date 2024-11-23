@@ -42,23 +42,35 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
     setIsSearchModalOpen(true);
   };
 
+  /**
+   * 検索モーダル閉じる
+   */
   const handleCloseSearchModal = () => {
     setIsSearchModalOpen(false);
   };
 
+  /**
+   * 詳細モーダル開く
+   */
   const handleOpenDetailModal = (equipment: EquipmentInstance) => {
     setSelectedEquipment(equipment);
     setIsDetailModalOpen(true);
   };
 
+  /**
+   * 詳細モーダル閉じる
+   */
   const handleCloseDetailModal = () => {
     setIsDetailModalOpen(false);
   };
 
+  /**
+   * コア反映,錬成反映
+   */
   const handleApplyCore = (equipmentInstance: EquipmentInstance) => {
     setEquipmentInstances(
       equipmentInstances.map((equipment) =>
-        equipment.id === equipmentInstance.id
+        equipment.uuid === equipmentInstance.uuid
           ? {
               ...equipment,
               core: equipmentInstance.core,
@@ -70,6 +82,9 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
     setIsDetailModalOpen(false);
   };
 
+  /**
+   * カテゴリ変更
+   */
   const handleCategoryChange = (category: Category) => {
     setSelectedCategory(category);
   };
@@ -111,7 +126,7 @@ const WarehouseComponent: React.FC<WarehouseComponentProps> = ({
    */
   const handleDeleteButtonClick = (equipment: EquipmentInstance) => {
     setEquipmentInstances(
-      equipmentInstances.filter((instance) => instance.id !== equipment.id)
+      equipmentInstances.filter((instance) => instance.uuid !== equipment.uuid)
     );
   };
 
