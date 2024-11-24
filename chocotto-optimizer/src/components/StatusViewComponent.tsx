@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CharacterStatus, AvatarStatus, UserFileExtension } from "../../types/types";
+import NumberInput from "./common/NumberInput";
 
 interface StatusViewComponentProps {
   characterStatus: CharacterStatus;
@@ -303,12 +304,10 @@ const StatusItemComponent: React.FC<StatusItemComponentProps> = ({
   return (
     <div className="status-item">
       <label className="status-label">{label}</label>
-      <input
-        className="status-input"
-        type="number"
-        name={name}
+      <NumberInput
+        inputWidth="50%"
         value={value}
-        onChange={onChange}
+        setValue={(value) => onChange({ target: { name, value: Number(value) } } as unknown as React.ChangeEvent<HTMLInputElement>)}
       />
     </div>
   );

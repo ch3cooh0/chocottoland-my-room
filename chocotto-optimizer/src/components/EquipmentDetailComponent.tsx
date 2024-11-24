@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Core, CoreNo, EquipmentInstance, Reinforce, ReinforceType, StatusKey } from "../../types/types";
+import NumberInput from "./common/NumberInput";
+import SelectComponent from "./common/SelectComponent";
 
 interface EquipmentDetailComponentProps {
   equipmentInstance: EquipmentInstance | null;
@@ -15,25 +17,41 @@ const EquipmentDetailComponent: React.FC<EquipmentDetailComponentProps> = ({
   const [reinforce, setReinforce] = useState<Reinforce>(equipmentInstance?.reinforce || {type: "None", lv: 0});
   const [core, setCore] = useState<Core>(() => equipmentInstance?.core || {1:{},2:{},3:{}} as Core);
 
-  const handleReinforceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setReinforce({...reinforce, lv: Number(event.target.value)});
-  };
-
   const handleCoreChangeKey = (no: CoreNo, key: StatusKey | "") => {
     if (key === "") {
       setCore((prevCore) => ({ ...prevCore, [no]: {} }));
     } else {
-      setCore((prevCore) => ({ ...prevCore, [no]: { ...prevCore[no], [key]: 0 } }));
+      setCore((prevCore) => ({ ...prevCore, [no]: { [key]: 0 } }));
     }
   };
   const handleCoreChangeValue = (no: CoreNo, value: number) => {
     const key = Object.keys(core[no])[0];
-    setCore((prevCore) => ({ ...prevCore, [no]: { ...prevCore[no], [key]: value } }));
+    setCore((prevCore) => ({ ...prevCore, [no]: { [key]: value } }));
   };
 
   const handleApplyCoreButtonClick = () => {
     handleApplyCore({...equipmentInstance, core: core, reinforce: reinforce} as EquipmentInstance);
   };
+
+  const statusOptions = [
+    { value: "pow", label: "pow" },
+    { value: "int", label: "int" },
+    { value: "vit", label: "vit" },
+    { value: "spd", label: "spd" },
+    { value: "luk", label: "luk" },
+    { value: "hp", label: "hp" },
+    { value: "sp", label: "sp" },
+    { value: "atk", label: "atk" },
+    { value: "def", label: "def" },
+    { value: "mat", label: "mat" },
+    { value: "mdf", label: "mdf" },
+    { value: "hpr", label: "hpr" },
+    { value: "spr", label: "spr" },
+    { value: "exp", label: "exp" },
+    { value: "pet", label: "pet" },
+    { value: "mov", label: "mov" },
+    { value: "drn", label: "drn" },
+  ];
 
   return (
     <div className="modal">
@@ -52,12 +70,10 @@ const EquipmentDetailComponent: React.FC<EquipmentDetailComponentProps> = ({
           </label>
           <label>
             錬成レベル:
-            <input
-              type="number"
-              value={reinforce.lv}
-              onChange={handleReinforceChange}
-              min="0"
-              max="20"
+            <NumberInput value={reinforce.lv} 
+              setValue={(value) => setReinforce({...reinforce, lv: value})} 
+              minValue={0}
+              maxValue={20}
             />
           </label>
         </div>
@@ -67,71 +83,32 @@ const EquipmentDetailComponent: React.FC<EquipmentDetailComponentProps> = ({
             if (Object.keys(core[no as unknown as CoreNo]).length === 0) {
               return (
                 <div key={`empty-${no}`} className="core-enhancement">
-                  <label>
-                    {Object.keys(core[no as unknown as CoreNo])}
-                    <select onChange={(e) => handleCoreChangeKey(no as unknown as CoreNo, e.target.value as StatusKey)}>
-                      <option value=""></option>
-                      <>
-                        <option value="pow">pow</option>
-                        <option value="int">int</option>
-                        <option value="vit">vit</option>
-                        <option value="spd">spd</option>
-                        <option value="luk">luk</option>
-                        <option value="hp">hp</option>
-                        <option value="sp">sp</option>
-                        <option value="atk">atk</option>
-                        <option value="def">def</option>
-                        <option value="mat">mat</option>
-                        <option value="mdf">mdf</option>
-                        <option value="hpr">hpr</option>
-                        <option value="spr">spr</option>
-                        <option value="exp">exp</option>
-                        <option value="pet">pet</option>
-                        <option value="mov">mov</option>
-                        <option value="drn">drn</option>
-                      </>
-                    </select>
-                    <input
-                      type="number"
-                      value={0}
-                      onChange={(e) => handleCoreChangeValue(no as unknown as CoreNo, Number(e.target.value))}
+                    <SelectComponent
+                      options={statusOptions}
+                      width="5em"
+                      height="2.4em"
+                      value={Object.keys(core[no as unknown as CoreNo])[0] || ""}
+                      onChange={(value) => handleCoreChangeKey(no as unknown as CoreNo, value as StatusKey)}
                     />
-                  </label>
+                    <NumberInput
+                      value={core[no as unknown as CoreNo][Object.keys(core[no as unknown as CoreNo])[0] as StatusKey] || 0}
+                      setValue={(value) => handleCoreChangeValue(no as unknown as CoreNo, value)}
+                    />
                 </div>
               );
             } else {
               return (
                 <div key={`filled-${no}`} className="core-enhancement">
-                  <label>
-                    <select 
-                      value={Object.keys(core[no as unknown as CoreNo])[0]} 
-                      onChange={(e) => handleCoreChangeKey(no as unknown as CoreNo, e.target.value as StatusKey)}>
-                      <option value=""></option>
-                      <>
-                        <option value="pow">pow</option>
-                        <option value="int">int</option>
-                        <option value="vit">vit</option>
-                        <option value="spd">spd</option>
-                        <option value="luk">luk</option>
-                        <option value="hp">hp</option>
-                        <option value="sp">sp</option>
-                        <option value="atk">atk</option>
-                        <option value="def">def</option>
-                        <option value="mat">mat</option>
-                        <option value="mdf">mdf</option>
-                        <option value="hpr">hpr</option>
-                        <option value="spr">spr</option>
-                        <option value="exp">exp</option>
-                        <option value="pet">pet</option>
-                        <option value="mov">mov</option>
-                        <option value="drn">drn</option>
-                      </>
-                    </select>
-                  </label>
-                  <input 
-                    type="number" 
-                    value={core[no as unknown as CoreNo][Object.keys(core[no as unknown as CoreNo])[0] as StatusKey]} 
-                    onChange={(e) => handleCoreChangeValue(no as unknown as CoreNo, Number(e.target.value))} 
+                  <SelectComponent
+                    options={statusOptions}
+                    width="5em"
+                    height="2.4em"
+                    value={Object.keys(core[no as unknown as CoreNo])[0] || ""}
+                    onChange={(value) => handleCoreChangeKey(no as unknown as CoreNo, value as StatusKey)}
+                    />
+                  <NumberInput
+                    value={core[no as unknown as CoreNo][Object.keys(core[no as unknown as CoreNo])[0] as StatusKey] || 0}
+                    setValue={(value) => handleCoreChangeValue(no as unknown as CoreNo, value)}
                   />
                 </div>
               );
