@@ -3,24 +3,34 @@
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "chocottoland-optimizer",
   "asar": true,
-  "productName": "ちょこころね",
+  "productName": "chococorone",
   "directories": {
     "output": "release/${version}"
   },
+
   "files": [
     "dist",
-    "dist-electron",
-    "data"
+    "dist-electron"
+  ],
+  "extraResources": [
+    {
+      "from": "data",
+      "to": "data",
+      "filter": ["**/*"]
+    }
   ],
   "win": {
     "target": [
       {
         "target": "portable",
-        "arch": [
-          "x64"
-        ]
+        "arch": ["x64"]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+    "icon": "public/choco_cornet_icon_256x256.png",
+    "artifactName": "${productName}-Windows-${version}.exe",
+    "signingHashAlgorithms": null,
+    "signAndEditExecutable": false
+
+
   }
 }
