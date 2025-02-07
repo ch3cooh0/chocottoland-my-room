@@ -67,7 +67,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./chocotto-optimizer/release/${{ steps.package_version.outputs.version }}/ちょこころね-${{ steps.package_version.outputs.version }}.exe
-        asset_name: ちょこころね-${{ steps.package_version.outputs.version }}.exe
+        asset_name: 'ちょこころね-${{ steps.package_version.outputs.version }}.exe'
         asset_content_type: application/octet-stream
 
     - name: Zip Data Directory
