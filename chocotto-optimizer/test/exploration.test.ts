@@ -4,9 +4,9 @@ import { AvatarStatus, CharacterStatus, EquipmentInstance } from "../types/types
 import { it, describe, expect, beforeAll } from "vitest";
 import { ZeroStatus } from "../electron/modules/utiles";
 import { loadCache } from "../electron/modules/statusCalculation";
-
+import path from "path";
 beforeAll(async () => {
-    await loadCache();
+    await loadCache(path.join(process.cwd(), 'data'));
 });
 
 describe("generateCombinations", () => {
