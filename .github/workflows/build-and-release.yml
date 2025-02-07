@@ -2,7 +2,7 @@ name: Build and Release
 
 permissions:
   contents: write
-  
+
 on:
   workflow_dispatch:
 
@@ -41,23 +41,23 @@ jobs:
         pnpm run build
       continue-on-error: true
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.sha }}
-        release_name: Release ${{ github.sha }}
-        draft: false
-        prerelease: false
-
     - name: Get version
       id: package_version
       shell: pwsh
       run: |
         cd chocotto-optimizer
         echo "version=$(node -p "require('./package.json').version")" >> $env:GITHUB_OUTPUT
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.package_version.outputs.version }}
+        release_name: Release v${{ steps.package_version.outputs.version }}
+        draft: false
+        prerelease: false
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
