@@ -39,14 +39,15 @@ jobs:
       run: |
         cd chocotto-optimizer
         pnpm run build
-      continue-on-error: true
+
 
     - name: Get version
       id: package_version
       shell: pwsh
       run: |
         cd chocotto-optimizer
-        echo "version=$(node -p "require('./package.json').version")" >> $env:GITHUB_OUTPUT
+        $version = node -p 'require("./package.json").version'
+        echo "version=$version" >> $env:GITHUB_OUTPUT
 
     - name: Create Release
       id: create_release
@@ -69,12 +70,17 @@ jobs:
         asset_name: ちょこころね-${{ steps.package_version.outputs.version }}.exe
         asset_content_type: application/octet-stream
 
+    - name: Zip Data Directory
+      shell: pwsh
+      run: |
+        Compress-Archive -Path "./chocotto-optimizer/data/*" -DestinationPath "./chocotto-optimizer/data.zip"
+
     - name: Upload Data Directory
       uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./chocotto-optimizer/data
-        asset_name: data.zip
-        asset_content_type: application/zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./chocotto-optimizer/data.zip
+        asset_name: data.zip
+        asset_content_type: application/zip
