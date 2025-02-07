@@ -62,11 +62,10 @@ function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
     win?.webContents.send('app-path', getAppDataPath(app))
   });
-  win.webContents.openDevTools();
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
-    
+    win.webContents.openDevTools();
   } else {
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
@@ -213,8 +212,8 @@ ipcMain.handle(
   "searchEquipment",
   async (_event, fixCategory, searchName, sortKey, sortOrder) => {
     const appDataPath = getAppDataPath(app);
-    console.log('AppDataパス:', appDataPath);
-    console.log('パッケージ状態:', app.isPackaged);
+    console.log('AppDataPath:', appDataPath);
+    console.log('isPackaged:', app.isPackaged);
     const equipmentPath = path.join(appDataPath, "equipments.csv");
     const equipmentMaster = await loadEquipmentFromCSV(equipmentPath);
     const searchedEquipments = equipmentMaster
@@ -291,7 +290,7 @@ ipcMain.handle(
   ) => {
     try {
       const appDataPath = getAppDataPath(app);
-      console.log('AppDataパス:', appDataPath);
+      console.log('AppDataPath:', appDataPath);
       await loadCache(appDataPath);
       
       console.log('Loading cache completed');

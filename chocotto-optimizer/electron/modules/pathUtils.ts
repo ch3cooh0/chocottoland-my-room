@@ -6,7 +6,11 @@ export function getAppDataPath(app: Electron.App) {
       return path.join(process.cwd(), 'data')
     }
     if(app.isPackaged){
-        return path.join(process.resourcesPath, 'data')
+        console.log(app.getPath('exe'))
+        const exePath = process.env.PORTABLE_EXECUTABLE_DIR || path.dirname(process.execPath);
+        console.log(exePath)
+        return path.join(exePath, 'data')
+
     }
     return path.join(process.cwd(), 'data')
   }
