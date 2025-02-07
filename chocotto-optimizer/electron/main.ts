@@ -33,7 +33,9 @@ import {
   DAO,
 } from "./modules/statusCalculation";
 import { generateSingleCombinations } from "./modules/exploration";
+import { getAppDataPath } from "./modules/pathUtils";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 
@@ -49,14 +51,16 @@ let win: BrowserWindow | null;
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "choco_cornet_icon_64x64.png"),
+    icon: path.join(process.env.VITE_PUBLIC, "choco_cornet_icon_256x256.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
     },
   });
 
+
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
+    win?.webContents.send('app-path', getAppDataPath(app))
   });
 
   if (VITE_DEV_SERVER_URL) {
@@ -202,14 +206,47 @@ ipcMain.handle("show-open-dialog", async (_event,ext: UserFileExtension) => {
 });
 
 /**
+ * 装備マスターから装備検索
+ */
+ipcMain.handle(
+  "searchEquipment",
+  async (_event, fixCategory, searchName, sortKey, sortOrder) => {
+    const appDataPath = getAppDataPath(app);
+    console.log('AppDataPath:', appDataPath);
+    console.log('isPackaged:', app.isPackaged);
+    const equipmentPath = path.join(appDataPath, "equipments.csv");
+    const equipmentMaster = await loadEquipmentFromCSV(equipmentPath);
+    const searchedEquipments = equipmentMaster
+
+      .filter((equipment) => {
+        return (
+          equipment.category === fixCategory &&
+          (searchName === "" || equipment.name.includes(searchName))
+        );
+      })
+      .sort((a, b) => {
+        if (sortKey === "") return 0;
+        return a[sortKey as StatusKey] > b[sortKey as StatusKey] ? 1 : -1;
+      });
+    if (sortOrder === "desc") {
+      searchedEquipments.reverse();
+    }
+    return searchedEquipments;
+  }
+);
+
+/**
  * 倉庫保存データ→装備インスタンス変換
  */
 ipcMain.handle(
   "convertEquipmentSimplesToEquipmentInstances",
   async (_event, equipmentSimples) => {
-    const equipmentMaster = await loadEquipmentFromCSV("./data/equipments.csv");
+    const appDataPath = getAppDataPath(app);
+    const equipmentPath = path.join(appDataPath, "equipments.csv");
+    const equipmentMaster = await loadEquipmentFromCSV(equipmentPath);
     const equipmentInstances =
       EquipmentDTO.convertEquipmentSimplesToEquipmentInstances(
+
         equipmentSimples,
         equipmentMaster
       );
@@ -240,31 +277,6 @@ ipcMain.handle(
 );
 
 /**
- * 装備マスターから装備検索
- */
-ipcMain.handle(
-  "searchEquipment",
-  async (_event, fixCategory, searchName, sortKey, sortOrder) => {
-    const equipmentMaster = await loadEquipmentFromCSV("./data/equipments.csv");
-    const searchedEquipments = equipmentMaster
-      .filter((equipment) => {
-        return (
-          equipment.category === fixCategory &&
-          (searchName === "" || equipment.name.includes(searchName))
-        );
-      })
-      .sort((a, b) => {
-        if (sortKey === "") return 0;
-        return a[sortKey as StatusKey] > b[sortKey as StatusKey] ? 1 : -1;
-      });
-    if (sortOrder === "desc") {
-      searchedEquipments.reverse();
-    }
-    return searchedEquipments;
-  }
-);
-
-/**
  * ステータス計算
  */
 ipcMain.handle(
@@ -276,75 +288,92 @@ ipcMain.handle(
     characterStatus: CharacterStatus,
     avatarStatus: AvatarStatus
   ) => {
-    await loadCache();
-    // メイン装備の錬成強化ステータスを含んだ合計ステータス
-    const mainReinforcedStatus = calcEquippedStatus.calcMainEquippedReinforcedStatus(
-      characterMainEquipment
-    );
-    // 特殊コアの合計値
-    const coreStatus = coreEffectUtils.calcCoreEffect(characterMainEquipment);
+    try {
+      const appDataPath = getAppDataPath(app);
+      console.log('AppDataPath:', appDataPath);
+      await loadCache(appDataPath);
+      
+      console.log('Loading cache completed');
+      console.log('Main equipment:', characterMainEquipment);
+      console.log('Sub equipment:', characterSubEquipment);
 
-    // サブ装備の錬成強化ステータスを含んだ合計ステータス
-    const subReinforcedStatus = calcEquippedStatus.calcSubEquippedReinforcedStatus(
-      characterSubEquipment
-    );
-    // コンボ情報
-    const comboInfos = comboEffectUtils.getComboInfo(
-      EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
-    );
-    // 装備効果
-    const equippedEffects = equippedEffectUtils.getEquippedEffect(
-      EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
-    );
 
-    // コンボ増加量
-    const comboStatus = comboEffectUtils.calcComboEffect(comboInfos);
+      // メイン装備の錬成強化ステータスを含んだ合計ステータス
+      const mainReinforcedStatus = calcEquippedStatus.calcMainEquippedReinforcedStatus(
+        characterMainEquipment
+      );
+      console.log('Main reinforced status calculated');
 
-    // 装備増加量
-    const equippedStatus = equippedEffectUtils.calcEquippedEffect(
-      equippedEffects,
-      mainReinforcedStatus,
-      subReinforcedStatus,
-      comboStatus,
-      characterStatus,
-      avatarStatus,
-      coreStatus
-    );
+      // 特殊コアの合計値
+      const coreStatus = coreEffectUtils.calcCoreEffect(characterMainEquipment);
+      console.log('Core status calculated');
 
-    // 合計値
-    const totalStatus = calcTotalStatus.addMultipleTotalStatus(
-      // キャラクターステータス
-      EquipmentDTO.convertCharacterStatusToTotalStatus(characterStatus),
-      // アバターステータス
-      EquipmentDTO.convertAvatarStatusToTotalStatus(avatarStatus),
-      // 装備
-      mainReinforcedStatus,
-      subReinforcedStatus,
+      // サブ装備の錬成強化ステータスを含んだ合計ステータス
+      const subReinforcedStatus = calcEquippedStatus.calcSubEquippedReinforcedStatus(
+        characterSubEquipment
+      );
+      // コンボ情報
+      const comboInfos = comboEffectUtils.getComboInfo(
+        EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
+      );
       // 装備効果
-      equippedStatus,
-      // セット効果
-      comboStatus,
-      coreStatus
-    );
+      const equippedEffects = equippedEffectUtils.getEquippedEffect(
+        EquipmentDTO.convertEquippedToEquipmentInstances(characterMainEquipment)
+      );
 
-    const viewComboEffectInfos = comboInfos.map((comboInfo) => {
+      // コンボ増加量
+      const comboStatus = comboEffectUtils.calcComboEffect(comboInfos);
+
+      // 装備増加量
+      const equippedStatus = equippedEffectUtils.calcEquippedEffect(
+        equippedEffects,
+        mainReinforcedStatus,
+        subReinforcedStatus,
+        comboStatus,
+        characterStatus,
+        avatarStatus,
+        coreStatus
+      );
+
+      // 合計値
+      const totalStatus = calcTotalStatus.addMultipleTotalStatus(
+        // キャラクターステータス
+        EquipmentDTO.convertCharacterStatusToTotalStatus(characterStatus),
+        // アバターステータス
+        EquipmentDTO.convertAvatarStatusToTotalStatus(avatarStatus),
+        // 装備
+        mainReinforcedStatus,
+        subReinforcedStatus,
+        // 装備効果
+        equippedStatus,
+        // セット効果
+        comboStatus,
+        coreStatus
+      );
+
+      const viewComboEffectInfos = comboInfos.map((comboInfo) => {
+        return {
+          equipmentNames: comboInfo.comboEquipment.map((equipment) => DAO.equipmentDAO.searchEquipment(equipment.equipment_id)?.name),
+          comboText: comboInfo.comboStatus.text,
+          comboStatus: comboInfo.comboStatus,
+        };
+      });
+      const viewEffectInfos = equippedEffects.map((effect) => {
+        return {
+          equipmentName: DAO.equipmentDAO.searchEquipment(effect.equipment_id)?.name,
+          effectText: effect.text,
+        };
+      });
       return {
-        equipmentNames: comboInfo.comboEquipment.map((equipment) => DAO.equipmentDAO.searchEquipment(equipment.equipment_id)?.name),
-        comboText: comboInfo.comboStatus.text,
-        comboStatus: comboInfo.comboStatus,
+        totalStatus: calcViewStatus.applyExtendedStatus(totalStatus),
+        viewComboEffectInfos: viewComboEffectInfos,
+        viewEffectInfos: viewEffectInfos,
       };
-    });
-    const viewEffectInfos = equippedEffects.map((effect) => {
-      return {
-        equipmentName: DAO.equipmentDAO.searchEquipment(effect.equipment_id)?.name,
-        effectText: effect.text,
-      };
-    });
-    return {
-      totalStatus: calcViewStatus.applyExtendedStatus(totalStatus),
-      viewComboEffectInfos: viewComboEffectInfos,
-      viewEffectInfos: viewEffectInfos,
-    };
+
+    } catch (error) {
+      console.error('Error in calcTotalStatus:', error);
+      throw error;
+    }
   }
 );
 
@@ -352,8 +381,10 @@ ipcMain.handle(
  * 探索結果生成
  */
 ipcMain.handle("generateSingleCombinations", async (_event, equipmentList, characterStatus, avatarStatus, key, N) => {
-  await loadCache();
+  const appDataPath = getAppDataPath(app);
+  await loadCache(appDataPath);
   return generateSingleCombinations(equipmentList, characterStatus, avatarStatus, key, N);
 });
+
 
 app.whenReady().then(createWindow);

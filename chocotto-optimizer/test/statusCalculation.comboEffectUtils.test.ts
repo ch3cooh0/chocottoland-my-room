@@ -1,3 +1,4 @@
+import path from "path";
 import {
   comboEffectUtils,
   loadCache,
@@ -11,7 +12,7 @@ import {
 import { expect, describe, it, beforeAll } from "vitest";
 
 beforeAll(async () => {
-  await loadCache();
+  await loadCache(path.join(process.cwd(), 'data'));
 });
 
 describe("comboEffectUtils", () => {
@@ -39,7 +40,7 @@ describe("comboEffectUtils", () => {
     mov: 0,
     drn: 0,
     core: { 1: {}, 2: {}, 3: {} },
-    reinforceLevel: 0,
+    reinforce: { type: "None", lv: 0 },
     iconid: "",
   };
   describe("getComboInfo", () => {
