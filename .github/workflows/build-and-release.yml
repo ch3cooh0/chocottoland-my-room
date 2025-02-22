@@ -1,5 +1,8 @@
 name: Build and Release
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
 
@@ -36,7 +39,15 @@ jobs:
       run: |
         cd chocotto-optimizer
         pnpm run build
-      continue-on-error: true
+
+
+    - name: Get version
+      id: package_version
+      shell: pwsh
+      run: |
+        cd chocotto-optimizer
+        $version = node -p 'require("./package.json").version'
+        echo "version=$version" >> $env:GITHUB_OUTPUT
 
     - name: Create Release
       id: create_release
@@ -44,15 +55,32 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.sha }}
-        release_name: Release ${{ github.sha }}
+        tag_name: v${{ steps.package_version.outputs.version }}
+        release_name: Release v${{ steps.package_version.outputs.version }}
         draft: false
         prerelease: false
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./chocotto-optimizer/release
-        asset_name: chocotto-optimizer-win32-ia32.zip
+        asset_path: ./chocotto-optimizer/release/${{ steps.package_version.outputs.version }}/ちょこころね-${{ steps.package_version.outputs.version }}.exe
+        asset_name: 'chocoCornet-${{ steps.package_version.outputs.version }}.exe'
+        asset_content_type: application/octet-stream
+
+    - name: Zip Data Directory
+      shell: pwsh
+      run: |
+        Compress-Archive -Path "./chocotto-optimizer/data/*" -DestinationPath "./chocotto-optimizer/data.zip"
+
+    - name: Upload Data Directory
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./chocotto-optimizer/data.zip
+        asset_name: data.zip
         asset_content_type: application/zip

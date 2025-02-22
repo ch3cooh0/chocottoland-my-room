@@ -7,20 +7,24 @@
   "directories": {
     "output": "release/${version}"
   },
+
   "files": [
     "dist",
     "dist-electron",
-    "data"
+    "data/**/*"
   ],
   "win": {
     "target": [
       {
         "target": "portable",
-        "arch": [
-          "x64"
-        ]
+        "arch": ["x64"]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+    "icon": "public/choco_cornet_icon_256x256.png",
+    "artifactName": "${productName}-${version}.exe",
+    "signingHashAlgorithms": null,
+    "signAndEditExecutable": false
+
+
   }
 }

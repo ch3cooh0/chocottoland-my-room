@@ -21,6 +21,8 @@ import {
 } from "./loader";
 import { EquipmentDTO } from "./dto";
 import { ZeroStatus } from "./utiles";
+import path from "path";
+
 
 const cache = {
   equippedEffects: [] as EquippedEffect[],
@@ -29,18 +31,18 @@ const cache = {
   equipmentMaster: [] as Equipment[],
 };
 
-export const loadCache = async () => {
+export const loadCache = async (appDataPath: string) => {
   cache.equippedEffects = await loadEquippedEffectFromCSV(
-    "./data/equipped_effects.csv"
+    path.join(appDataPath, "equipped_effects.csv")
   );
   cache.comboEquipments = await loadComboEquipmentFromCSV(
-    "./data/combo_equipments.csv"
+    path.join(appDataPath, "combo_equipments.csv")
   );
   cache.comboStatuses = await loadComboStatusFromCSV(
-    "./data/combo_statuses.csv"
+    path.join(appDataPath, "combo_statuses.csv")
   );
   cache.equipmentMaster = await loadEquipmentFromCSV(
-    "./data/equipments.csv"
+    path.join(appDataPath, "equipments.csv")
   );
 };
 
