@@ -127,6 +127,7 @@
 "100125","player_ability","290d1563-1207-4905-b725-851be9e0e90d","-","-","-","「VITDOWN」を100%無効化。"
 "100126","player_base_status","290d1563-1207-4905-b725-851be9e0e90d","player","vit","x0.60","プレイヤー基本VIT+60%"
 "100127","player_base_status","9a223ecf-2154-458b-9136-3da88caf65e9","equipment","vit","x0.16","装備品合計VIT+16%"
+"100128","player_ability","eff88b23-6400-43c3-b4a8-e92a1d83d45a","-","-","-","「VITDOWN」を100%無効化。"
 "100129","player_base_status","eff88b23-6400-43c3-b4a8-e92a1d83d45a","player","vit","x0.65","プレイヤー基本VIT+65%"
 "100130","player_base_status","337ee475-360b-486d-aab8-5788ce7bdf31","equipment","vit","x0.17","装備品合計VIT+17%"
 "100131","player_base_status","d38ceac5-3b2b-47c2-88f0-ffb79633d072","avatar","vit","x1.0","AVAVIT×2"
