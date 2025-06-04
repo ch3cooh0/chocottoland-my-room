@@ -188,7 +188,7 @@ export const generateTargetEquipmentList = {
      */
     subEquipmentList: (equipmentList: EquipmentInstance[], part: Category, key: StatusKey, N: number): EquipmentInstance[] => {
         const filteredList = generateTargetEquipmentList.filterEquipmentListByCategoryOrderedDesc(equipmentList, part, key, "sub");
-        return filteredList.slice(0, N+1);
+        return filteredList.slice(0, N);
     }
 }
 
