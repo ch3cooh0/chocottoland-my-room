@@ -30,6 +30,7 @@ jobs:
     - name: Install dependencies
       shell: pwsh
       run: |
+        chcp 65001
         npm install -g pnpm
         cd chocotto-optimizer
         pnpm install
@@ -37,6 +38,7 @@ jobs:
     - name: Build project
       shell: pwsh
       run: |
+        chcp 65001
         cd chocotto-optimizer
         pnpm run build
 
@@ -45,6 +47,7 @@ jobs:
       id: package_version
       shell: pwsh
       run: |
+        chcp 65001
         cd chocotto-optimizer
         $version = node -p 'require("./package.json").version'
         echo "version=$version" >> $env:GITHUB_OUTPUT
@@ -73,6 +76,7 @@ jobs:
     - name: Zip Data Directory
       shell: pwsh
       run: |
+        chcp 65001
         Compress-Archive -Path "./chocotto-optimizer/data/*" -DestinationPath "./chocotto-optimizer/data.zip"
 
     - name: Upload Data Directory
