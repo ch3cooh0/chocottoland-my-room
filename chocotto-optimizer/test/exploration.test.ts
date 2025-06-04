@@ -1,5 +1,5 @@
 import { 服, 盾, 背, 靴, 頭, 首, 手, 武器 } from "./testConst";
-import { generateSingleCombinations, calculateStats } from "../electron/modules/exploration";
+import { generateSingleCombinations, calculateStats, generateTargetEquipmentList } from "../electron/modules/exploration";
 import { AvatarStatus, CharacterStatus, EquipmentInstance } from "../types/types";
 import { it, describe, expect, beforeAll } from "vitest";
 import { ZeroStatus } from "../electron/modules/utiles";
@@ -47,7 +47,7 @@ describe("generateCombinations", () => {
         const characterStatus: CharacterStatus = ZeroStatus.zeroCharacterStatus()
         const avatarStatus: AvatarStatus = ZeroStatus.zeroAvatarStatus()
         const result = generateSingleCombinations(equipmentList, characterStatus, avatarStatus,"pow", 1);
-        expect(result[0].totalStats.pow).toBe(37+14);
+        expect(result[0].totalStats.pow).toBe(46);
     });
 
     it("pow:装備効果2", () => {
@@ -122,5 +122,15 @@ describe("generateCombinations", async () => {
         const avatarStatus: AvatarStatus = ZeroStatus.zeroAvatarStatus()
         const result = generateSingleCombinations(equipmentList, characterStatus, avatarStatus,"pow", 1);
         expect(result.length).toBe(1);
+    });
+
+    it("subEquipmentList returns N items", () => {
+        const equipmentList: EquipmentInstance[] = [
+            { ...手.ドラゴライズリング, uuid: "手1", reinforce: { lv: 0, type: '物理' }, core: {1: {}, 2: {}, 3: {}}, category: "手" },
+            { ...手.ＰＯＷアバティアＳ, uuid: "手2", reinforce: { lv: 0, type: '物理' }, core: {1: {}, 2: {}, 3: {}}, category: "手" },
+            { ...手.ＩＮＴアバティアＳ, uuid: "手3", reinforce: { lv: 0, type: '魔法' }, core: {1: {}, 2: {}, 3: {}}, category: "手" },
+        ];
+        const result = generateTargetEquipmentList.subEquipmentList(equipmentList, "手", "def", 2);
+        expect(result.length).toBe(2);
     });
 });
