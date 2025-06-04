@@ -75,11 +75,17 @@ export const generateTargetEquipmentList = {
         if(mode === "main"){
             return equipmentList
                 .filter((eq) => eq.category === category)
-                .sort((a, b) => generateTargetEquipmentList.calcKeyStatusWithCore(b, key) - generateTargetEquipmentList.calcKeyStatusWithCore(a, key));
+                .sort((a, b) =>
+                    generateTargetEquipmentList.calcKeyStatusWithCore(b, key) -
+                    generateTargetEquipmentList.calcKeyStatusWithCore(a, key)
+                );
         } else {
             return equipmentList
                 .filter((eq) => eq.category === category)
-                .sort((a, b) => generateTargetEquipmentList.calcKeyStatusWithCore(b, key) - generateTargetEquipmentList.calcKeyStatus(a, key));
+                .sort((a, b) =>
+                    generateTargetEquipmentList.calcKeyStatus(b, key) -
+                    generateTargetEquipmentList.calcKeyStatus(a, key)
+                );
         }
     },
 
