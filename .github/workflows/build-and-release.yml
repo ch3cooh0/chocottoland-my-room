@@ -52,39 +52,20 @@ jobs:
         $version = node -p 'require("./package.json").version'
         echo "version=$version" >> $env:GITHUB_OUTPUT
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.package_version.outputs.version }}
-        release_name: Release v${{ steps.package_version.outputs.version }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./chocotto-optimizer/release/${{ steps.package_version.outputs.version }}/ちょこころね-${{ steps.package_version.outputs.version }}.exe
-        asset_name: 'ちょこころね-${{ steps.package_version.outputs.version }}.exe'
-        asset_content_type: application/octet-stream
-
     - name: Zip Data Directory
       shell: pwsh
       run: |
         chcp 65001
         Compress-Archive -Path "./chocotto-optimizer/data/*" -DestinationPath "./chocotto-optimizer/data.zip"
 
-    - name: Upload Data Directory
-      uses: actions/upload-release-asset@v1
+    - name: Create Release and Upload Assets
+      shell: pwsh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./chocotto-optimizer/data.zip
-        asset_name: data.zip
-        asset_content_type: application/zip
+      run: |
+        chcp 65001
+        gh release create v${{ steps.package_version.outputs.version }} `
+          ./chocotto-optimizer/release/${{ steps.package_version.outputs.version }}/ちょこころね-${{ steps.package_version.outputs.version }}.exe `
+          ./chocotto-optimizer/data.zip `
+          --title "Release v${{ steps.package_version.outputs.version }}" `
+          --notes ""
