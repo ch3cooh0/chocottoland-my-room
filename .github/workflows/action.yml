@@ -37,7 +37,7 @@ jobs:
       shell: pwsh
       run: |
         cd chocotto-optimizer
-        pnpm run test
+        pnpm run test:ci
 
     - name: Run lint
       shell: pwsh
