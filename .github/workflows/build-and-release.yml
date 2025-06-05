@@ -19,6 +19,15 @@ jobs:
       with:
         node-version: '18'
 
+    - name: Install or Verify GitHub CLI
+      shell: pwsh
+      run: |
+        chcp 65001
+        if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+          choco install gh -y
+        }
+        gh --version
+
     - name: Cache pnpm store
       uses: actions/cache@v3
       with:
