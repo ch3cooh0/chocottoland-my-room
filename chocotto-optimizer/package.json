@@ -10,7 +10,8 @@
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:ci": "vitest run"
   },
   "dependencies": {
     "csv-parser": "^3.0.0",
