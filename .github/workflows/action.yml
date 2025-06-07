@@ -33,11 +33,17 @@ jobs:
         cd chocotto-optimizer
         pnpm install
 
-    - name: Run tests
+    - name: Run tests with coverage
       shell: pwsh
       run: |
         cd chocotto-optimizer
-        pnpm run test:ci
+        pnpm run test:coverage
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: chocotto-optimizer/coverage
 
     - name: Run lint
       shell: pwsh
