@@ -42,11 +42,11 @@ jobs:
         cd chocotto-optimizer
         pnpm run test:coverage
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: chocotto-optimizer/coverage
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage
+        path: chocotto-optimizer/coverage
 
     - name: Run lint
       shell: pwsh
